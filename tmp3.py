@@ -18,24 +18,21 @@ jump = False
 
 height_increments = [38, 72, 102, 128, 150, 168, 182]
 block_height = []
-block_x_1 = []
-block_x_2 = []
+block_left_side = []
+block_right_side = []
 
 
 def on_update(delta_time):
     global up_pressed, down_pressed, left_pressed, right_pressed, player_x, player_y
     global jump, hit_d, hit_l, hit_r, jump_h, up, down
 
-    if player_y < 38 and 120 == player_x or player_x > 760:
-        hit_r = True
-    else:
-        hit_r = False
-
-    if player_y < 38 and 280 == player_x or player_x <= 40:
-        hit_l = True
-    else:
-        hit_l = False
-
+    for i in range(len(block_left_side)):
+        for n in range(len(height_increments)):
+            if block_left_side[i] < player_x < block_right_side[i] and jump_h == height_increments[n]:
+                hit_d = True
+            elif player_y + jump_h == 0:
+                hit_d = True
+    
     if player_y + jump_h <= 0:
         hit_d = True
     elif 160 < player_x < 240 and jump_h + player_y == 38:
@@ -62,9 +59,7 @@ def on_update(delta_time):
             player_y += jump_h
             jump_h = 0
         down = 0
-        jump_h = -up ** 2
-        jump_h /= 2
-        jump_h += 200
+        jump_h = 0.5 * -up ** 2 + 200
         up += 1
 
         print(player_y, player_x, jump_h)
