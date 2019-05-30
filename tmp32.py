@@ -1,4 +1,5 @@
 import arcade
+import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -42,6 +43,7 @@ def on_update(delta_time):
     if start:
         check_hit()
         jumping()
+        sounds()
 
 
 def check_hit():
@@ -85,6 +87,12 @@ def new_platforms():
 
 def menu():
     pass
+
+
+def sounds():
+    pass
+    #file = "Laser Gun Sound Effects All Sounds.mp3"
+    #os.system("mpg123" + file)
 
 
 def draw_snow_person(x, y):
