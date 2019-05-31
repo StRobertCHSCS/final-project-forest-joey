@@ -86,7 +86,12 @@ def new_platforms():
 
 
 def menu():
-    pass
+
+    if intro:
+        arcade.draw_rectangle_filled(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.PINK)
+        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT//2, 400, 100, arcade.color.PINK_LACE)
+        text_start = "Click space to start"
+        arcade.draw_text(text_start, 300, SCREEN_HEIGHT//2, arcade.color.BLACK, 18)
 
 
 def sounds():
@@ -112,7 +117,7 @@ def draw_snow_person(x, y):
 
 
 def on_draw():
-    global player_x, player_y, jump_h, shift, SCREEN_HEIGHT, SCREEN_WIDTH
+    global player_x, player_y, jump_h, shift
     arcade.start_render()
 
     draw_snow_person(player_x, player_y + jump_h - shift)
@@ -121,11 +126,7 @@ def on_draw():
     arcade.draw_rectangle_filled(400, 91 - shift, 80, 38, arcade.color.BLACK)
     arcade.draw_rectangle_filled(270, 193 - shift, 80, 38, arcade.color.BLACK)
 
-    if intro:
-        arcade.draw_rectangle_filled(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.PINK)
-        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT//2, 400, 100, arcade.color.PINK_LACE)
-        text_start = "Click space to start"
-        arcade.draw_text(text_start, 300, SCREEN_HEIGHT//2, arcade.color.BLACK, 18)
+    menu()
 
 
 def on_key_press(key, modifiers):
