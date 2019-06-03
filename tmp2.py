@@ -55,12 +55,15 @@ def on_update(delta_time):
             jump_h = 0
             player_y = 0
         down = 0
-        jump_h = 0.5 * -up ** 2 + 200
+        jump_h = -up ** 2
+        jump_h /= 2
+        jump_h += 200
         up += 1
         print(player_y, player_x, jump_h)
 
     if not hit_d and player_y + jump_h != 0 and not jump:
-        jump_h = 0.5 * -down ** 2
+        jump_h = -down ** 2
+        jump_h /= 2
         down -= 1
         print(player_y, player_x, jump_h)
 

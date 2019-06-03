@@ -1,4 +1,6 @@
 import arcade
+import random
+import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -19,11 +21,14 @@ left_pressed = False
 right_pressed = False
 
 start = False
+intro = True
 
 height_increments = [38, 72, 102, 128, 150, 168, 182]
 block_height = [38, 110, 212]
 block_left_side = [160, 360, 230]
 block_right_side = [240, 440, 310]
+
+count = 0
 
 
 def on_update(delta_time):
@@ -41,6 +46,8 @@ def on_update(delta_time):
     if start:
         check_hit()
         jumping()
+        sounds()
+        score()
 
 
 def check_hit():
@@ -75,15 +82,40 @@ def jumping():
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
 
-    print(player_y, player_x, jump_h)
+    # print(player_y, player_x, jump_h)
 
 
 def new_platforms():
     pass
+    if block_height[len(block_height)] - player_y < 300:
+        block_height.append(height_increments[random.randint(0, 6)])
+
+        lateral_delta = random.randint(90, max_d)
+        new_block = block_left_side[len(block_left_side)]
+        block_left_side.append()
 
 
 def menu():
+
+    if intro:
+        arcade.draw_rectangle_filled(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.PINK)
+        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT//2, 400, 100, arcade.color.PINK_LACE)
+        text_start = "Click space to start"
+        arcade.draw_text(text_start, 300, SCREEN_HEIGHT//2, arcade.color.BLACK, 18)
+
+
+def sounds():
     pass
+    #file = "Laser Gun Sound Effects All Sounds.mp3"
+    #os.system("mpg123" + file)
+
+
+def score():
+    global count
+
+    if hit_d:
+        count += 1
+        print(count / 2)
 
 
 def draw_snow_person(x, y):
@@ -112,25 +144,25 @@ def on_draw():
     arcade.draw_rectangle_filled(400, 91 - shift, 80, 38, arcade.color.BLACK)
     arcade.draw_rectangle_filled(270, 193 - shift, 80, 38, arcade.color.BLACK)
 
+    menu()
+
 
 def on_key_press(key, modifiers):
-    global up_pressed, down_pressed, right_pressed, left_pressed
+    global up_pressed, down_pressed, right_pressed, left_pressed, intro
     if key == arcade.key.W:
         up_pressed = True
-    if key == arcade.key.S:
-        down_pressed = True
     if key == arcade.key.A:
         left_pressed = True
     if key == arcade.key.D:
         right_pressed = True
+    if key == arcade.key.SPACE:
+        intro = False
 
 
 def on_key_release(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed
     if key == arcade.key.W:
         up_pressed = False
-    if key == arcade.key.S:
-        down_pressed = False
     if key == arcade.key.A:
         left_pressed = False
     if key == arcade.key.D:
