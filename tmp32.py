@@ -103,7 +103,7 @@ def sounds():
 def crash():
     if player_y < 0:
         arcade.draw_rectangle_filled(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT,
-                                         arcade.color.GREEN)
+                                     arcade.color.GREEN)
         arcade.draw_rectangle_filled(400, SCREEN_HEIGHT // 2, 400, 100, arcade.color.PINK_LACE)
         text_start = "you crashed"
         arcade.draw_text(text_start, 300, SCREEN_HEIGHT // 2, arcade.color.BLACK, 18)
@@ -123,6 +123,21 @@ def draw_ghost(x, y):
     arcade.draw_circle_filled(x + 15, 210 + y, 5, arcade.color.BLACK)
 
 
+def draw_ghost_left(x, y):
+    global left_pressed
+    if left_pressed:
+        # Draw a point at x, y for reference
+        arcade.draw_point(x, y, arcade.color.RED, 5)
+
+        # Snow
+        arcade.draw_circle_filled(x, 60 + y, 60, arcade.color.WHITE)
+        arcade.draw_circle_filled(x, 140 + y, 50, arcade.color.WHITE)
+        arcade.draw_circle_filled(x, 200 + y, 40, arcade.color.WHITE)
+
+        # Eyes
+        arcade.draw_circle_filled(x - 15, 210 + y, 5, arcade.color.BLACK)
+
+
 def on_draw():
     global player_x, player_y, jump_h, shift, SCREEN_HEIGHT, SCREEN_WIDTH
     arcade.start_render()
@@ -135,6 +150,7 @@ def on_draw():
 
     menu()
     crash()
+    draw_ghost_left(player_x, player_y + jump_h - shift)
 
 
 def on_key_press(key, modifiers):
