@@ -86,7 +86,12 @@ def new_platforms():
 
 
 def menu():
-    pass
+    if intro:
+        arcade.draw_rectangle_filled(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT,
+                                     arcade.color.PINK)
+        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT // 2, 400, 100, arcade.color.PINK_LACE)
+        text_start = "Click space to start"
+        arcade.draw_text(text_start, 300, SCREEN_HEIGHT // 2, arcade.color.BLACK, 18)
 
 
 def sounds():
@@ -95,8 +100,16 @@ def sounds():
     #os.system("mpg123" + file)
 
 
-def draw_snow_person(x, y):
-    """ Draw a snow person """
+def crash():
+    if player_y < 0:
+        arcade.draw_rectangle_filled(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT,
+                                         arcade.color.GREEN)
+        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT // 2, 400, 100, arcade.color.PINK_LACE)
+        text_start = "you crashed"
+        arcade.draw_text(text_start, 300, SCREEN_HEIGHT // 2, arcade.color.BLACK, 18)
+
+
+def draw_ghost(x, y):
 
     # Draw a point at x, y for reference
     arcade.draw_point(x, y, arcade.color.RED, 5)
@@ -107,7 +120,6 @@ def draw_snow_person(x, y):
     arcade.draw_circle_filled(x, 200 + y, 40, arcade.color.WHITE)
 
     # Eyes
-    arcade.draw_circle_filled(x - 15, 210 + y, 5, arcade.color.BLACK)
     arcade.draw_circle_filled(x + 15, 210 + y, 5, arcade.color.BLACK)
 
 
@@ -115,17 +127,14 @@ def on_draw():
     global player_x, player_y, jump_h, shift, SCREEN_HEIGHT, SCREEN_WIDTH
     arcade.start_render()
 
-    draw_snow_person(player_x, player_y + jump_h - shift)
+    draw_ghost(player_x, player_y + jump_h - shift)
 
     arcade.draw_rectangle_filled(200, 19 - shift, 80, 38, arcade.color.BLACK)
     arcade.draw_rectangle_filled(400, 91 - shift, 80, 38, arcade.color.BLACK)
     arcade.draw_rectangle_filled(270, 193 - shift, 80, 38, arcade.color.BLACK)
 
-    if intro:
-        arcade.draw_rectangle_filled(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.PINK)
-        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT//2, 400, 100, arcade.color.PINK_LACE)
-        text_start = "Click space to start"
-        arcade.draw_text(text_start, 300, SCREEN_HEIGHT//2, arcade.color.BLACK, 18)
+    menu()
+    crash()
 
 
 def on_key_press(key, modifiers):
