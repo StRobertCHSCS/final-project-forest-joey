@@ -95,18 +95,19 @@ def menu():
 
 
 def sounds():
-    pass
-    #file = "Laser Gun Sound Effects All Sounds.mp3"
-    #os.system("mpg123" + file)
+    laser_sound = arcade.load_sound("Laser Gun Sound Effects All Sounds.mp3")
+    arcade.play_sound(laser_sound)
 
 
 def crash():
+    global start
     if player_y < 0:
         arcade.draw_rectangle_filled(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT,
                                      arcade.color.GREEN)
         arcade.draw_rectangle_filled(400, SCREEN_HEIGHT // 2, 400, 100, arcade.color.PINK_LACE)
         text_start = "you crashed"
         arcade.draw_text(text_start, 300, SCREEN_HEIGHT // 2, arcade.color.BLACK, 18)
+        start = False
 
 
 def draw_ghost(x, y):
