@@ -114,8 +114,9 @@ def score():
     global count
 
     if hit_d:
-        count += 1
-        print(count / 2)
+        count += 0.5
+
+    print(count)
 
 
 def draw_snow_person(x, y):

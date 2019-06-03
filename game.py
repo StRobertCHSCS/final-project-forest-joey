@@ -1,4 +1,5 @@
 import arcade
+from random import randint
 import os
 
 SCREEN_WIDTH = 800
@@ -7,7 +8,6 @@ SCREEN_HEIGHT = 600
 player_x = 60
 player_y = 0
 jump_h = 0
-shift = 0
 up = -20
 
 hit_d = False
@@ -23,13 +23,20 @@ start = False
 intro = True
 
 height_increments = [38, 72, 102, 128, 150, 168, 182]
+lateral_direction = [1, -1]
+
 block_height = [38, 110, 212]
 block_left_side = [160, 360, 230]
 block_right_side = [240, 440, 310]
 
+count = 0
+shift = 0
+
 
 def on_update(delta_time):
     global up_pressed, left_pressed, right_pressed, player_x, start
+
+    new_platforms()
 
     if up_pressed:
         start = True
@@ -78,11 +85,17 @@ def jumping():
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
 
-    print(player_y, player_x, jump_h)
-
 
 def new_platforms():
-    pass
+    global block_height, block_left_side, block_right_side
+
+    if block_height[len(block_height) - 1] - player_y > 200:
+        new_height = block_height[len(block_height) - 1] + height_increments[randint(0, 6)]
+        new_width = block_left_side[len(block_height) - 1] + randint(8, 20) * 10 * lateral_direction[randint(0, 1)]
+
+        block_left_side.append(new_width)
+        block_right_side.append(new_width + 80)
+        block_height.append(new_height)
 
 
 def menu():
@@ -93,6 +106,14 @@ def menu():
         text_start = "Click space to start"
         arcade.draw_text(text_start, 300, SCREEN_HEIGHT//2, arcade.color.BLACK, 18)
 
+
+def score():
+    global count
+
+    if hit_d:
+        count += 0.5
+
+    print(count)
 
 def sounds():
     pass
@@ -122,9 +143,8 @@ def on_draw():
 
     draw_snow_person(player_x, player_y + jump_h - shift)
 
-    arcade.draw_rectangle_filled(200, 19 - shift, 80, 38, arcade.color.BLACK)
-    arcade.draw_rectangle_filled(400, 91 - shift, 80, 38, arcade.color.BLACK)
-    arcade.draw_rectangle_filled(270, 193 - shift, 80, 38, arcade.color.BLACK)
+    for i in range(len(block_left_side)):
+        arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 19 - shift, 80, 38, arcade.color.BLACK)
 
     menu()
 
