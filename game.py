@@ -34,9 +34,9 @@ shift = 0
 
 
 def on_update(delta_time):
-    global up_pressed, left_pressed, right_pressed, player_x, start
+    global up_pressed, left_pressed, right_pressed, player_x, start, block_count
 
-    new_platforms()
+    block_count = len(block_height) - 1
 
     if up_pressed:
         start = True
@@ -51,10 +51,11 @@ def on_update(delta_time):
         check_hit()
         jumping()
         sounds()
+        new_platforms()
 
 
 def check_hit():
-    global hit_d, hit_l, hit_r, player_x, player_y, jump_h
+    global hit_d, hit_l, hit_r, player_x, player_y, jump_h, block_count
 
     hit_d = False
     hit_r = False
@@ -64,7 +65,7 @@ def check_hit():
         hit_l = True
     if player_x >= 740:
         hit_r = True
-    for i in range(len(block_left_side)):
+    for i in range(block_count + 1):
         if block_left_side[i] < player_x < block_right_side[i] and jump_h + player_y == block_height[i]:
             hit_d = True
         elif player_y + jump_h <= 0:
@@ -87,15 +88,29 @@ def jumping():
 
 
 def new_platforms():
-    global block_height, block_left_side, block_right_side
+    global block_height, block_left_side, block_right_side, block_count
 
-    if block_height[len(block_height) - 1] - player_y > 200:
-        new_height = block_height[len(block_height) - 1] + height_increments[randint(0, 6)]
-        new_width = block_left_side[len(block_height) - 1] + randint(8, 20) * 10 * lateral_direction[randint(0, 1)]
+    if (block_height[block_count] - player_y) < 200:
+        print(block_height[block_count] - player_y)
+        if block_left_side[block_count] <= 40:
+            lateral_v = 1
+            new_height = block_height[block_count] + height_increments[randint(2, 6)]
+        elif block_right_side[block_count] >= 760:
+            lateral_v = -1
+            new_height = block_height[block_count] + height_increments[randint(2, 6)]
+        else:
+            lateral_v = lateral_direction[randint(0, 1)]
+            new_height = block_height[block_count] + height_increments[randint(0, 6)]
 
-        block_left_side.append(new_width)
-        block_right_side.append(new_width + 80)
+        lateral_d = randint(6, 20) * 10
+
         block_height.append(new_height)
+        block_left_side.append(block_left_side[block_count] + lateral_d * lateral_v)
+        block_right_side.append(block_right_side[block_count] + lateral_d * lateral_v)
+
+
+def shifting():
+    pass
 
 
 def menu():
@@ -122,19 +137,9 @@ def sounds():
 
 
 def draw_snow_person(x, y):
-    """ Draw a snow person """
 
     # Draw a point at x, y for reference
-    arcade.draw_point(x, y, arcade.color.RED, 5)
-
-    # Snow
-    arcade.draw_circle_filled(x, 60 + y, 60, arcade.color.WHITE)
-    arcade.draw_circle_filled(x, 140 + y, 50, arcade.color.WHITE)
-    arcade.draw_circle_filled(x, 200 + y, 40, arcade.color.WHITE)
-
-    # Eyes
-    arcade.draw_circle_filled(x - 15, 210 + y, 5, arcade.color.BLACK)
-    arcade.draw_circle_filled(x + 15, 210 + y, 5, arcade.color.BLACK)
+    arcade.draw_circle_filled(x, y + 10, 10, arcade.color.RED)
 
 
 def on_draw():
@@ -144,7 +149,7 @@ def on_draw():
     draw_snow_person(player_x, player_y + jump_h - shift)
 
     for i in range(len(block_left_side)):
-        arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 19 - shift, 80, 38, arcade.color.BLACK)
+        arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 15 - shift, 80, 30, arcade.color.BLACK)
 
     menu()
 
