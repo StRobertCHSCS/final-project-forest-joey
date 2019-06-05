@@ -1,37 +1,39 @@
 import arcade
-import os
+from random import randint
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+screen_width = 800
+screen_height = 600
 
 player_x = 60
 player_y = 0
 jump_h = 0
-shift = 0
 up = -20
 
 hit_d = False
 hit_l = False
 hit_r = False
 
-up_pressed = False
-down_pressed = False
 left_pressed = False
 right_pressed = False
 
 start = False
 intro = True
 
-height_increments = [38, 72, 102, 128, 150, 168, 182]
+height_increments = [38, 72, 102, 128, 150]
+lateral_direction = [1, -1]
+
 block_height = [38, 110, 212]
 block_left_side = [160, 360, 230]
 block_right_side = [240, 440, 310]
 
+shift = 0
+block_count = 3
+
 
 def on_update(delta_time):
-    global up_pressed, left_pressed, right_pressed, player_x, start
+    global up_pressed, left_pressed, right_pressed, player_x, start, block_count
 
-    if up_pressed:
+    if not intro:
         start = True
 
     if left_pressed and not hit_l and start:
@@ -41,23 +43,27 @@ def on_update(delta_time):
         player_x += 8
 
     if start:
+        reset()
+        block_count = len(block_height) - 1
         check_hit()
-        jumping()
         sounds()
+        jumping()
+        new_platforms()
+        shifting()
 
 
 def check_hit():
-    global hit_d, hit_l, hit_r, player_x, player_y, jump_h
+    global hit_d, hit_l, hit_r, player_x, player_y, jump_h, block_count
 
     hit_d = False
     hit_r = False
     hit_l = False
 
-    if player_x <= 60:
+    if player_x <= 10:
         hit_l = True
-    if player_x >= 740:
+    if player_x >= 790:
         hit_r = True
-    for i in range(len(block_left_side)):
+    for i in range(block_count + 1):
         if block_left_side[i] < player_x < block_right_side[i] and jump_h + player_y == block_height[i]:
             hit_d = True
         elif player_y + jump_h <= 0:
@@ -78,20 +84,64 @@ def jumping():
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
 
-    print(player_y, player_x, jump_h)
-
 
 def new_platforms():
-    pass
+    global block_height, block_left_side, block_right_side, block_count
+
+    if (block_height[block_count] - player_y) < 200:
+
+        if block_left_side[block_count] <= 150:
+            lateral_v = 1
+            new_height = block_height[block_count] + height_increments[randint(2, 4)]
+        elif block_right_side[block_count] >= 570:
+            lateral_v = -1
+            new_height = block_height[block_count] + height_increments[randint(2, 4)]
+        else:
+            lateral_v = lateral_direction[randint(0, 1)]
+            new_height = block_height[block_count] + height_increments[randint(0, 4)]
+
+        lateral_d = randint(8, 20) * 10
+
+        block_height.append(new_height)
+        block_left_side.append(block_left_side[block_count] + lateral_d * lateral_v)
+        block_right_side.append(block_right_side[block_count] + lateral_d * lateral_v)
+
+
+def shifting():
+    global shift
+
+    if player_y - shift > 200:
+        shift += 5
 
 
 def menu():
 
     if intro:
-        arcade.draw_rectangle_filled(SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.PINK)
-        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT//2, 400, 100, arcade.color.PINK_LACE)
+        arcade.draw_rectangle_filled(screen_width//2, screen_height//2, screen_width, screen_height, arcade.color.PINK)
+        arcade.draw_rectangle_filled(400, screen_height//2, 400, 100, arcade.color.PINK_LACE)
         text_start = "Click space to start"
-        arcade.draw_text(text_start, 300, SCREEN_HEIGHT//2, arcade.color.BLACK, 18)
+        arcade.draw_text(text_start, 300, screen_height//2, arcade.color.BLACK, 18)
+
+
+def score():
+    pass
+
+
+def reset():
+    global intro, start, block_height, block_left_side, block_right_side, player_y, player_x, jump_h, up, shift
+
+    if player_y + jump_h - shift < 0:
+        start = False
+        intro = True
+        for i in range(block_count - 2):
+            del block_height[3]
+            del block_right_side[3]
+            del block_left_side[3]
+        player_y = 0
+        player_x = 60
+        jump_h = 0
+        up = -20
+        shift = 0
 
 
 def sounds():
@@ -100,39 +150,30 @@ def sounds():
     #os.system("mpg123" + file)
 
 
-def draw_snow_person(x, y):
-    """ Draw a snow person """
+def character(x, y):
 
-    # Draw a point at x, y for reference
-    arcade.draw_point(x, y, arcade.color.RED, 5)
-
-    # Snow
-    arcade.draw_circle_filled(x, 60 + y, 60, arcade.color.WHITE)
-    arcade.draw_circle_filled(x, 140 + y, 50, arcade.color.WHITE)
-    arcade.draw_circle_filled(x, 200 + y, 40, arcade.color.WHITE)
-
-    # Eyes
-    arcade.draw_circle_filled(x - 15, 210 + y, 5, arcade.color.BLACK)
-    arcade.draw_circle_filled(x + 15, 210 + y, 5, arcade.color.BLACK)
+    arcade.draw_circle_filled(x, y + 10, 10, arcade.color.RED)
 
 
 def on_draw():
     global player_x, player_y, jump_h, shift
     arcade.start_render()
 
-    draw_snow_person(player_x, player_y + jump_h - shift)
+    if block_count < 8:
+        beginning = 0
+    else:
+        beginning = block_count - 8
 
-    arcade.draw_rectangle_filled(200, 19 - shift, 80, 38, arcade.color.BLACK)
-    arcade.draw_rectangle_filled(400, 91 - shift, 80, 38, arcade.color.BLACK)
-    arcade.draw_rectangle_filled(270, 193 - shift, 80, 38, arcade.color.BLACK)
+    for i in range(beginning, block_count):
+        arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 5 - shift, 80, 10, arcade.color.BLACK)
+
+    character(player_x, player_y + jump_h - shift)
 
     menu()
 
 
 def on_key_press(key, modifiers):
-    global up_pressed, down_pressed, right_pressed, left_pressed, intro
-    if key == arcade.key.W:
-        up_pressed = True
+    global right_pressed, left_pressed, intro 
     if key == arcade.key.A:
         left_pressed = True
     if key == arcade.key.D:
@@ -142,9 +183,7 @@ def on_key_press(key, modifiers):
 
 
 def on_key_release(key, modifiers):
-    global up_pressed, down_pressed, right_pressed, left_pressed
-    if key == arcade.key.W:
-        up_pressed = False
+    global right_pressed, left_pressed
     if key == arcade.key.A:
         left_pressed = False
     if key == arcade.key.D:
@@ -167,4 +206,3 @@ def setup():
 
 if __name__ == '__main__':
     setup()
-
