@@ -86,17 +86,22 @@ def new_platforms():
 
 
 def menu():
+    texture = arcade.load_texture("images/space_meu.jpg")
+    texture_slogo = arcade.load_texture("images/splogo (2).jpg")
+
     if intro:
-        arcade.draw_rectangle_filled(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT,
-                                     arcade.color.PINK)
-        arcade.draw_rectangle_filled(400, SCREEN_HEIGHT // 2, 400, 100, arcade.color.PINK_LACE)
-        text_start = "Click space to start"
-        arcade.draw_text(text_start, 300, SCREEN_HEIGHT // 2, arcade.color.BLACK, 18)
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 1 * texture.width,
+                                      1 * texture.height, texture, 0)
+        arcade.draw_texture_rectangle(400, 300, 0.3 * texture_slogo.width, 0.3 * texture_slogo.height, texture_slogo, 0)
+        text_start = "Click                    to start"
+        arcade.draw_text(text_start, 260, SCREEN_HEIGHT // 2, arcade.color.WHITE, 24, font_name= 'Calibri')
+        # create "space" logo - logo has the word "space" in it so its click "space logo" to start
 
 
 def sounds():
-    laser_sound = arcade.load_sound("Laser Gun Sound Effects All Sounds.mp3")
-    arcade.play_sound(laser_sound)
+    pass
+    #laser_sound = arcade.load_sound("Laser Gun Sound Effects All Sounds.mp3")
+    #arcade.play_sound(laser_sound)
 
 
 def crash():
@@ -108,6 +113,11 @@ def crash():
         text_start = "you crashed"
         arcade.draw_text(text_start, 300, SCREEN_HEIGHT // 2, arcade.color.BLACK, 18)
         start = False
+
+
+def score():
+    if start:
+        arcade.draw_text(str(player_y), 360, 550, arcade.color.BLACK, 36)
 
 
 def draw_ghost(x, y):
@@ -152,6 +162,7 @@ def on_draw():
     menu()
     crash()
     draw_ghost_left(player_x, player_y + jump_h - shift)
+    score()
 
 
 def on_key_press(key, modifiers):
