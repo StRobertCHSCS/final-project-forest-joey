@@ -85,7 +85,7 @@ def new_platforms():
 
 
 def menu():
-    texture = arcade.load_texture("images/space_meu.jpg")
+    texture = arcade.load_texture("images/erath.jpg")
     texture_slogo = arcade.load_texture("images/splogo (2).jpg")
 
     if intro:
