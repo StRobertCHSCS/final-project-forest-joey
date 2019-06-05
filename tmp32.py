@@ -43,7 +43,6 @@ def on_update(delta_time):
     if start:
         check_hit()
         jumping()
-        sounds()
 
 
 def check_hit():
@@ -95,13 +94,13 @@ def menu():
         arcade.draw_texture_rectangle(400, 300, 0.3 * texture_slogo.width, 0.3 * texture_slogo.height, texture_slogo, 0)
         text_start = "Click                    to start"
         arcade.draw_text(text_start, 260, SCREEN_HEIGHT // 2, arcade.color.WHITE, 24, font_name= 'Calibri')
-        # create "space" logo - logo has the word "space" in it so its click "space logo" to start
+        sounds()
 
 
 def sounds():
     pass
-    #laser_sound = arcade.load_sound("Laser Gun Sound Effects All Sounds.mp3")
-    #arcade.play_sound(laser_sound)
+    laser_sound = arcade.load_sound("sounds/3538.mp3")
+    arcade.play_sound(laser_sound)
 
 
 def crash():
