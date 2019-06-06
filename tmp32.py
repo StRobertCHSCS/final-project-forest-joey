@@ -1,5 +1,4 @@
 import arcade
-import os
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -27,9 +26,11 @@ block_height = [38, 110, 212]
 block_left_side = [160, 360, 230]
 block_right_side = [240, 440, 310]
 
+time = 0
+
 
 def on_update(delta_time):
-    global up_pressed, left_pressed, right_pressed, player_x, start
+    global up_pressed, left_pressed, right_pressed, player_x, start, time
 
     if up_pressed:
         start = True
@@ -43,6 +44,10 @@ def on_update(delta_time):
     if start:
         check_hit()
         jumping()
+
+    if time > 120:
+        sounds()
+        time = 0
 
 
 def check_hit():
@@ -85,22 +90,25 @@ def new_platforms():
 
 
 def menu():
-    texture = arcade.load_texture("images/erath.jpg")
+    global time
+    texture = arcade.load_texture("images/erathe.jpg")
     texture_slogo = arcade.load_texture("images/splogo (2).jpg")
 
     if intro:
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 1 * texture.width,
-                                      1 * texture.height, texture, 0)
-        arcade.draw_texture_rectangle(400, 300, 0.3 * texture_slogo.width, 0.3 * texture_slogo.height, texture_slogo, 0)
-        text_start = "Click                    to start"
-        arcade.draw_text(text_start, 260, SCREEN_HEIGHT // 2, arcade.color.WHITE, 24, font_name= 'Calibri')
-        sounds()
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 1.4 * texture.width,
+                                      1.4 * texture.height, texture, 0)
+        arcade.draw_texture_rectangle(380, 300, 0.2 * texture_slogo.width, 0.2 * texture_slogo.height, texture_slogo, 0)
+        text_start = "Click              to start"
+        arcade.draw_text(text_start, 260, SCREEN_HEIGHT // 2, arcade.color.WHITE, 24, font_name='Calibri')
+
+        if time > 120:
+            sounds()
+            time = 0
 
 
 def sounds():
-    pass
-    # laser_sound = arcade.load_sound("sounds/3538.mp3")
-    # arcade.play_sound(laser_sound)
+    laser_sound = arcade.load_sound("sounds/3538.mp3")
+    arcade.play_sound(laser_sound)
 
 
 def crash():
