@@ -99,8 +99,8 @@ def menu():
 
 def sounds():
     pass
-    laser_sound = arcade.load_sound("sounds/3538.mp3")
-    arcade.play_sound(laser_sound)
+    # laser_sound = arcade.load_sound("sounds/3538.mp3")
+    # arcade.play_sound(laser_sound)
 
 
 def crash():

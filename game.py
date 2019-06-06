@@ -28,10 +28,11 @@ block_right_side = [240, 440, 310]
 
 shift = 0
 block_count = 3
+high_score = 0
 
 
 def on_update(delta_time):
-    global up_pressed, left_pressed, right_pressed, player_x, start, block_count
+    global left_pressed, right_pressed, player_x, start, block_count
 
     if not intro:
         start = True
@@ -88,7 +89,7 @@ def jumping():
 def new_platforms():
     global block_height, block_left_side, block_right_side, block_count
 
-    if (block_height[block_count] - player_y) < 200:
+    if (block_height[block_count] - player_y) < 350:
 
         if block_left_side[block_count] <= 150:
             lateral_v = 1
@@ -115,24 +116,46 @@ def shifting():
 
 
 def menu():
+    texture = arcade.load_texture("images/space.jpg")
+    texture_logo = arcade.load_texture("images/splogo (2).jpg")
 
     if intro:
-        arcade.draw_rectangle_filled(screen_width//2, screen_height//2, screen_width, screen_height, arcade.color.PINK)
-        arcade.draw_rectangle_filled(400, screen_height//2, 400, 100, arcade.color.PINK_LACE)
-        text_start = "Click space to start"
-        arcade.draw_text(text_start, 300, screen_height//2, arcade.color.BLACK, 18)
+        arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 0.625 * texture.width,
+                                      0.625 * texture.height, texture, 0)
+        arcade.draw_texture_rectangle(400, 450, 0.3 * texture_logo.width, 0.3 * texture_logo.height, texture_logo, 0)
+        text_start = "Click                    to start"
+        arcade.draw_text(text_start, 260, 450, arcade.color.WHITE, 24, font_name='Calibri')
+        high_score_txt = "High score: " + str(high_score)
+        arcade.draw_text(high_score_txt, 500, 100, arcade.color.WHITE, 24, font_name='Calibri')
 
 
 def score():
-    pass
+    global high_score
+    if start:
+        arcade.draw_text(str(int(player_y)), 360, 550, arcade.color.BLACK, 36)
+
+    if player_y > high_score:
+        high_score = int(player_y)
+
+
+def losing_screen():
+    if player_y + jump_h - shift < 0:
+
+        arcade.draw_rectangle_filled(screen_width // 2, screen_height // 2, screen_width, screen_height,
+                                     arcade.color.GREEN)
+        arcade.draw_rectangle_filled(400, screen_height // 2, 400, 100, arcade.color.PINK_LACE)
+        text_start = "you crashed"
+        arcade.draw_text(text_start, 300, screen_height // 2, arcade.color.BLACK, 18)
 
 
 def reset():
     global intro, start, block_height, block_left_side, block_right_side, player_y, player_x, jump_h, up, shift
 
     if player_y + jump_h - shift < 0:
+
         start = False
         intro = True
+
         for i in range(block_count - 2):
             del block_height[3]
             del block_right_side[3]
@@ -146,8 +169,8 @@ def reset():
 
 def sounds():
     pass
-    #file = "Laser Gun Sound Effects All Sounds.mp3"
-    #os.system("mpg123" + file)
+    # file = "Laser Gun Sound Effects All Sounds.mp3"
+    # os.system("mpg123" + file)
 
 
 def character(x, y):
@@ -159,21 +182,23 @@ def on_draw():
     global player_x, player_y, jump_h, shift
     arcade.start_render()
 
-    if block_count < 8:
+    if block_count < 6:
         beginning = 0
     else:
-        beginning = block_count - 8
+        beginning = block_count - 6
 
     for i in range(beginning, block_count):
         arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 5 - shift, 80, 10, arcade.color.BLACK)
 
     character(player_x, player_y + jump_h - shift)
 
+    score()
     menu()
+    losing_screen()
 
 
 def on_key_press(key, modifiers):
-    global right_pressed, left_pressed, intro 
+    global right_pressed, left_pressed, intro
     if key == arcade.key.A:
         left_pressed = True
     if key == arcade.key.D:
