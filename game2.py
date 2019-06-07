@@ -1,6 +1,5 @@
 import arcade
 from random import randint
-import time
 
 screen_width = 800
 screen_height = 600
@@ -88,10 +87,10 @@ def check_hit():
     for i in range(beginning, block_count + 1):
         if block_left_side[i] < player_x < block_right_side[i] and jump_h + player_y == block_height[i]:
             hit_d = True
-            sounds()
+            bounce()
         elif player_y + jump_h <= 0:
             hit_d = True
-            sounds()
+            bounce()
 
 
 def jumping():
@@ -183,14 +182,14 @@ def reset():
         shift = 0
 
 
-def sounds():
+def bounce():
     laser_sound = arcade.load_sound("sounds/3538.mp3")
     arcade.play_sound(laser_sound)
 
 
-def bounce_sound():
-    bounce = arcade.load_sound("sounds/bounce.mp3")
-    arcade.play_sound(bounce)
+def splat_sound():
+    splat = arcade.load_sound("sounds/pihtas.mp3")
+    arcade.play_sound(splat)
 
 
 def on_draw():
@@ -274,6 +273,9 @@ def losing_screen():
         text_start = "Whoops, You Slipped and Died"
         arcade.draw_text(text_start, 250, 290, arcade.color.BLACK, 18)
         arcade.draw_texture_rectangle(400, 150, 0.5 * texture_died.width, 0.5 * texture_died.height, texture_died, 0)
+
+    if lost:
+        splat_sound()
 
     # the lost screen will disappear in one second and revert to the menu screen without user interference
     # if the user presses the space bar they will immediately start a new game
