@@ -54,14 +54,16 @@ def on_update(delta_time):
         jumping()
         new_platforms()
         shifting()
-
-        for i in range(5):
+'''
+for i in range(5):
             sounds()
             time.sleep(2)
 
         if time > 120:
             sounds()
             time = 0
+'''
+
 
 def check_hit():
     """
@@ -86,8 +88,10 @@ def check_hit():
     for i in range(beginning, block_count + 1):
         if block_left_side[i] < player_x < block_right_side[i] and jump_h + player_y == block_height[i]:
             hit_d = True
+            sounds()
         elif player_y + jump_h <= 0:
             hit_d = True
+            sounds()
 
 
 def jumping():
