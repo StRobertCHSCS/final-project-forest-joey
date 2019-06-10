@@ -227,38 +227,6 @@ def on_draw():
     instructions_1()
     losing_screen()
 
-    if instru:
-        if shipx == 700 and chary != 100:
-            arcade.draw_triangle_filled(710, 500, 400, 200, 700, 100, arcade.color.BABY_BLUE)
-            spaceship_instructions(700, 480)
-            charx -= 3
-            chary -= 5
-            character(charx, chary)
-        elif shipx != 700 and chary != 100:
-            arcade.draw_rectangle_filled(470, 100, 50, 50, arcade.color.BLACK)
-            shipx += 10
-            shipy -= 1
-        else:
-            shipx += 10
-            shipy -= 1
-            character(490, 100)
-            text_panel_1()
-
-        spaceship_instructions(shipx, shipy)
-        time += 1
-        if time > 60:
-            instru_2 = True
-
-    if instru_2:
-        text_panel_2()
-        character(700, 100)
-
-
-shipx = 0
-shipy = 550
-charx = 710
-chary = 470
-
 
 def character(x, y):
 
@@ -310,11 +278,42 @@ def menu():
 
 
 def instructions_1():
-    global instru, instru_2
+    global instru, instru_2, shipx, shipy, charx, chary, time
     texture = arcade.load_texture("images/starrr.png")
     if instru or instru_2:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture.width,
                                       1 * texture.height, texture, 0)
+    if instru:
+        if shipx == 700 and chary != 100:
+            arcade.draw_triangle_filled(710, 500, 400, 200, 700, 100, arcade.color.BABY_BLUE)
+            spaceship_instructions(700, 480)
+            charx -= 3
+            chary -= 5
+            character(charx, chary)
+        elif shipx != 700 and chary != 100:
+            arcade.draw_rectangle_filled(470, 100, 50, 50, arcade.color.BLACK)
+            shipx += 10
+            shipy -= 1
+        else:
+            shipx += 10
+            shipy -= 1
+            character(490, 100)
+            text_panel_1()
+
+        spaceship_instructions(shipx, shipy)
+        time += 1
+        if time > 60:
+            instru_2 = True
+
+    if instru_2:
+        text_panel_2()
+        character(700, 100)
+
+
+shipx = 0
+shipy = 550
+charx = 710
+chary = 470
 
 
 def text_panel_1():
