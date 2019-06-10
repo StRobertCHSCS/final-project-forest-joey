@@ -60,13 +60,15 @@ def on_update(delta_time):
         new_platforms()
         shifting()
 
-'''
-for i in range(5):
-            sounds()
-            time.sleep(2)
+    if lost:
+        start_sound = True
+        arcade.play_sound(splat)
 
-        if time > 120:
-            sounds()
+
+'''
+        time += 1
+        if time > 60:
+            splat_sound()
             time = 0
 '''
 
@@ -360,8 +362,6 @@ def losing_screen():
         text_start = "Whoops, You Slipped and Died"
         arcade.draw_text(text_start, 250, 290, arcade.color.BLACK, 18)
         arcade.draw_texture_rectangle(400, 150, 0.5 * texture_died.width, 0.5 * texture_died.height, texture_died, 0)
-
-        start_sound = True
 
     # the lost screen will disappear in one second and revert to the menu screen without user interference
     # if the user presses the space bar they will immediately start a new game
