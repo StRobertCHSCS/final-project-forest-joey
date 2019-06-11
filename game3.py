@@ -34,8 +34,7 @@ block_count = 3
 high_score = 0
 time = 0
 
-start_sound = False
-play_sound = False
+play_sound = True
 splat = arcade.load_sound("sounds/pihtas.mp3")
 
 
@@ -60,8 +59,8 @@ def on_update(delta_time):
         new_platforms()
         shifting()
 
-    if lost:
-        losing_screen()
+    splat_sound()
+
 '''
         time += 1
         if time > 60:
@@ -193,10 +192,10 @@ def bounce():
 
 
 def splat_sound():
-    global start_sound, play_sound, splat
+    global play_sound, splat
 
-    if start_sound and not play_sound:
-        play_sound = True
+    if play_sound:
+        play_sound = False
         arcade.play_sound(splat)
 
 
@@ -332,7 +331,7 @@ def spaceship_instructions(x, y):
 
 
 def losing_screen():
-    global time, lost, start_sound
+    global time, lost, play_sound
 
     # load images
     texture = arcade.load_texture("images/starrr.png")
@@ -340,7 +339,6 @@ def losing_screen():
 
     # draw the lost screen
     if lost:
-        start_sound = True
         time += 1
 
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture.width,
