@@ -38,7 +38,6 @@ start_sound = False
 play_sound = False
 splat = arcade.load_sound("sounds/pihtas.mp3")
 
-
 def on_update(delta_time):
 
     global left_pressed, right_pressed, player_x, start, block_count, time
@@ -60,8 +59,7 @@ def on_update(delta_time):
         new_platforms()
         shifting()
 
-    if lost:
-        losing_screen()
+
 '''
         time += 1
         if time > 60:
@@ -193,11 +191,10 @@ def bounce():
 
 
 def splat_sound():
-    global start_sound, play_sound, splat
-
+    global play_sound, start_sound, splat
     if start_sound and not play_sound:
-        play_sound = True
         arcade.play_sound(splat)
+        play_sound = True
 
 
 def on_draw():
@@ -340,15 +337,17 @@ def losing_screen():
 
     # draw the lost screen
     if lost:
-        start_sound = True
         time += 1
-
+        start_sound = True
+        splat_sound()
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture.width,
                                       1 * texture.height, texture, 0)
         arcade.draw_rectangle_filled(400, screen_height // 2, 400, 100, arcade.color.WHITE)
         text_start = "Whoops, You Slipped and Died"
         arcade.draw_text(text_start, 250, 290, arcade.color.BLACK, 18)
         arcade.draw_texture_rectangle(400, 150, 0.5 * texture_died.width, 0.5 * texture_died.height, texture_died, 0)
+
+
 
     # the lost screen will disappear in one second and revert to the menu screen without user interference
     # if the user presses the space bar they will immediately start a new game

@@ -91,7 +91,7 @@ def new_platforms():
 
 def menu():
     global time
-    texture = arcade.load_texture("images/starrr.jpg")
+    texture = arcade.load_texture("images/starrr.png")
     texture_slogo = arcade.load_texture("images/splogo (2).jpg")
 
     if intro:
