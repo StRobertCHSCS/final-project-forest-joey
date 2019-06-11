@@ -38,6 +38,7 @@ start_sound = False
 play_sound = False
 splat = arcade.load_sound("sounds/pihtas.mp3")
 
+
 def on_update(delta_time):
 
     global left_pressed, right_pressed, player_x, start, block_count, time
@@ -58,14 +59,6 @@ def on_update(delta_time):
         jumping()
         new_platforms()
         shifting()
-
-
-'''
-        time += 1
-        if time > 60:
-            splat_sound()
-            time = 0
-'''
 
 
 def check_hit():
@@ -223,11 +216,12 @@ def on_draw():
 def character(x, y):
 
     # loads and draws the image for the character
-    arcade.draw_circle_filled(x, y + 15, 15, arcade.color.RED)
-    arcade.draw_circle_filled(x + 7, y + 30, 5, arcade.color.WHITE)
-    arcade.draw_circle_filled(x - 7, y + 30, 5, arcade.color.WHITE)
-    arcade.draw_circle_filled(x - 5, y + 30, 3, arcade.color.BLACK)
-    arcade.draw_circle_filled(x + 10, y + 30, 3, arcade.color.BLACK)
+    texture_spicy = arcade.load_texture("images/chilli.png")
+    arcade.draw_texture_rectangle(x, y + 40, 0.2 * texture_spicy.width, 0.2 * texture_spicy.height, texture_spicy, 0)
+
+
+def character_left(x, y):
+    pass
 
 
 def score():
