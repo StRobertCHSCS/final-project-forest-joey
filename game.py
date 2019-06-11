@@ -21,7 +21,6 @@ start = False
 intro = True
 lost = False
 
-
 height_increments = [38, 72, 102, 128, 150]
 lateral_direction = [1, -1]
 
@@ -45,13 +44,12 @@ texture_stars = arcade.load_texture("images/starrr.png")
 texture_logo = arcade.load_texture("images/splogogo.png")
 texture_ship = arcade.load_texture("images/zoomwoom.png")
 texture_died = arcade.load_texture("images/splotplat.png")
+texture_sploogy = arcade.load_texture("images/chilli.png")
 
 ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
-
-texture_spicy = arcade.load_texture("images/chilli.png")
 
 
 def on_update(delta_time):
@@ -183,7 +181,7 @@ def reset():
     # if the character falls below the screen, reset all game parameters and display the losing screen
     if player_y + jump_h - shift < 0:
 
-        arcade.play_sound(splat_sound)
+        # arcade.play_sound(splat_sound)
 
         start = False
         intro = True
@@ -214,18 +212,19 @@ def on_draw():
 
     arcade.start_render()
 
-    # displays only the last 6 platforms to save computing power
-    if block_count < 6:
+    # displays only the last 8 platforms to save computing power
+    if block_count < 8:
         beginning = 0
     else:
-        beginning = block_count - 6
+        beginning = block_count - 8
 
     # draws the platforms
     for i in range(beginning, block_count):
-        arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 5 - shift, 80, 10, arcade.color.BLACK)
+        arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 5 - shift,
+                                     80, 10, arcade.color.ASH_GREY)
 
     arcade.draw_texture_rectangle(player_x, player_y + jump_h - shift + 30,
-                                  0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
+                                  0.15 * texture_sploogy.width, 0.15 * texture_sploogy.height, texture_sploogy)
 
     score()
     menu()
@@ -260,14 +259,20 @@ def menu():
     if intro and instructions_number == 0:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
                                       1 * texture_stars.height, texture_stars, 0)
+
         arcade.draw_texture_rectangle(700, 500, 0.8 * texture_ship.width, 0.8 * texture_ship.height, texture_ship, -25)
         arcade.draw_rectangle_filled(420, 220, 380, 70, arcade.color.ORANGE, 0)
         arcade.draw_circle_filled(247, 397, 70, arcade.color.YELLOW_ROSE)
         arcade.draw_texture_rectangle(250, 400, texture_logo.width, texture_logo.height, texture_logo, 0)
+
         text_start = "{0:^27}".format("Click SPACE to start!")
         arcade.draw_text(text_start, 250, 205, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+
         high_score_txt = "High score: " + str(high_score)
         arcade.draw_text(high_score_txt, 500, 100, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+
+        help_txt = "Press ENTER for help"
+        arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 20, font_name='Comic Sans MS')
 
 
 def instructions_1():
@@ -283,8 +288,8 @@ def instructions_1():
                                           texture_ship, -25)
             char_x -= 3
             char_y -= 5
-            arcade.draw_texture_rectangle(char_x, char_y, 0.15 * texture_spicy.width,
-                                          0.15 * texture_spicy.height, texture_spicy)
+            arcade.draw_texture_rectangle(char_x, char_y, 0.15 * texture_sploogy.width,
+                                          0.15 * texture_sploogy.height, texture_sploogy)
 
         elif ship_x != 700 and char_y != 100:
             arcade.draw_rectangle_filled(470, 100, 50, 50, arcade.color.BLACK)
@@ -295,7 +300,7 @@ def instructions_1():
             ship_x += 10
             ship_y -= 1
             arcade.draw_texture_rectangle(490, 100,
-                                          0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
+                                          0.15 * texture_sploogy.width, 0.15 * texture_sploogy.height, texture_sploogy)
             text_panel_1()
 
         arcade.draw_texture_rectangle(ship_x, ship_y, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
@@ -303,11 +308,13 @@ def instructions_1():
 
     if instructions_number == 2:
         text_panel_2()
-        arcade.draw_texture_rectangle(700, 100, 0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
+        arcade.draw_texture_rectangle(490, 100, 0.15 * texture_sploogy.width,
+                                      0.15 * texture_sploogy.height, texture_sploogy)
 
     if instructions_number == 3:
         text_panel_3()
-        arcade.draw_texture_rectangle(700, 100, 0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
+        arcade.draw_texture_rectangle(490, 100, 0.15 * texture_sploogy.width,
+                                      0.15 * texture_sploogy.height, texture_sploogy)
 
     if instructions_number > 3:
         instructions_number = 0
@@ -322,6 +329,9 @@ def text_panel_1():
     text_hi = "This is Sploogy"
     arcade.draw_text(text_hi, 100, 200, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
+    help_txt = "Press ENTER to continue"
+    arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 16, font_name='Comic Sans MS')
+
 
 def text_panel_2():
     arcade.draw_rectangle_filled(330, 470, 510, 160, arcade.color.ORANGE)
@@ -332,6 +342,9 @@ def text_panel_2():
     text_move = "Press 'A' to move left" '\n' "Press 'D' to move right"
     arcade.draw_text(text_move, 100, 150, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
+    help_txt = "Press ENTER to continue"
+    arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 16, font_name='Comic Sans MS')
+
 
 def text_panel_3():
     arcade.draw_rectangle_filled(280, 180, 400, 100, arcade.color.ORANGE)
@@ -339,6 +352,9 @@ def text_panel_3():
     text_press = "Press 'ENTER' to start"
     arcade.draw_text(text_go, 100, 160, arcade.color.WHITE, 24, font_name='Comic Sans MS')
     arcade.draw_text(text_press, 100, 190, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+
+    help_txt = "Press ENTER to continue"
+    arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 16, font_name='Comic Sans MS')
 
 
 def losing_screen():
@@ -386,7 +402,6 @@ def on_key_press(key, modifiers):
         intro = False
     if key == arcade.key.ENTER:
         instructions_number += 1
-        print(instructions_number)
 
 
 def on_key_release(key, modifiers):
