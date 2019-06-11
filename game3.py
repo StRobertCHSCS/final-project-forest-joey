@@ -221,7 +221,8 @@ def character(x, y):
 
 
 def character_left(x, y):
-    pass
+    texture_pepper = arcade.load_texture("images/jalapeno.png")
+    arcade.draw_texture_rectangle(x, y + 40, 0.2 * texture_pepper.width, 0.2 * texture_pepper.height, texture_pepper, 0)
 
 
 def score():
@@ -358,6 +359,7 @@ def on_key_press(key, modifiers):
 
     if key == arcade.key.A:
         left_pressed = True
+        character_left()
     if key == arcade.key.D:
         right_pressed = True
     if key == arcade.key.SPACE:
