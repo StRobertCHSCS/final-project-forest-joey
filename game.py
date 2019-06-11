@@ -35,11 +35,13 @@ high_score = 0
 time = 0
 count = 0
 
+start_sound = False
+play_sound = False
 laser_sound = arcade.load_sound("sounds/3538.mp3")
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
 
 # loads images
-texture_stars= arcade.load_texture("images/starrr.png")
+texture_stars = arcade.load_texture("images/starrr.png")
 texture_logo = arcade.load_texture("images/splogogo.png")
 texture_ship = arcade.load_texture("images/zoomwoom.png")
 texture_died = arcade.load_texture("images/splotplat.png")
@@ -48,6 +50,8 @@ ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
+
+texture_spicy = arcade.load_texture("images/chilli.png")
 
 
 def on_update(delta_time):
@@ -179,6 +183,8 @@ def reset():
     # if the character falls below the screen, reset all game parameters and display the losing screen
     if player_y + jump_h - shift < 0:
 
+        arcade.play_sound(splat_sound)
+
         start = False
         intro = True
         lost = True
@@ -218,23 +224,13 @@ def on_draw():
     for i in range(beginning, block_count):
         arcade.draw_rectangle_filled(block_left_side[i] + 40, block_height[i] - 5 - shift, 80, 10, arcade.color.BLACK)
 
-    character(player_x, player_y + jump_h - shift)
+    arcade.draw_texture_rectangle(player_x, player_y + jump_h - shift + 30,
+                                  0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
 
     score()
     menu()
     instructions_1()
     losing_screen()
-
-
-def character(x, y):
-    """
-    loads and draws the image of the character
-
-    :param x: the x position of the character
-    :param y: the y position of the character
-    :return: the image of the character
-    """
-    arcade.draw_circle_filled(x, y + 10, 10, arcade.color.RED)
 
 
 def score():
@@ -283,29 +279,35 @@ def instructions_1():
     if instructions_number == 1:
         if ship_x == 700 and char_y != 100:
             arcade.draw_triangle_filled(710, 500, 400, 200, 700, 100, arcade.color.BABY_BLUE)
-            spaceship_instructions(700, 480)
+            arcade.draw_texture_rectangle(700, 480, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
+                                          texture_ship, -25)
             char_x -= 3
             char_y -= 5
-            character(char_x, char_y)
+            arcade.draw_texture_rectangle(char_x, char_y, 0.15 * texture_spicy.width,
+                                          0.15 * texture_spicy.height, texture_spicy)
+
         elif ship_x != 700 and char_y != 100:
             arcade.draw_rectangle_filled(470, 100, 50, 50, arcade.color.BLACK)
             ship_x += 10
             ship_y -= 1
+
         else:
             ship_x += 10
             ship_y -= 1
-            character(490, 100)
+            arcade.draw_texture_rectangle(490, 100,
+                                          0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
             text_panel_1()
 
-        spaceship_instructions(ship_x, ship_y)
+        arcade.draw_texture_rectangle(ship_x, ship_y, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
+                                      texture_ship, -25)
 
     if instructions_number == 2:
         text_panel_2()
-        character(700, 100)
+        arcade.draw_texture_rectangle(700, 100, 0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
 
     if instructions_number == 3:
         text_panel_3()
-        character(700, 100)
+        arcade.draw_texture_rectangle(700, 100, 0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
 
     if instructions_number > 3:
         instructions_number = 0
@@ -337,11 +339,6 @@ def text_panel_3():
     text_press = "Press 'ENTER' to start"
     arcade.draw_text(text_go, 100, 160, arcade.color.WHITE, 24, font_name='Comic Sans MS')
     arcade.draw_text(text_press, 100, 190, arcade.color.WHITE, 24, font_name='Comic Sans MS')
-
-
-def spaceship_instructions(x, y):
-    texture_ship = arcade.load_texture("images/zoomwoom.png")
-    arcade.draw_texture_rectangle(x, y, 0.8 * texture_ship.width, 0.8 * texture_ship.height, texture_ship, -25)
 
 
 def losing_screen():
@@ -413,6 +410,7 @@ def setup():
     :return: calls the program
     """
     arcade.open_window(800, 600, "My Arcade Game")
+    arcade.set_background_color([20, 10, 40])
     arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2,
                                   screen_width, screen_width, texture_stars, 0)
     arcade.schedule(on_update, 1/60)
