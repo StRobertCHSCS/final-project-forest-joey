@@ -226,6 +226,8 @@ def on_draw():
 
     arcade.draw_texture_rectangle(player_x, player_y + jump_h - shift + 30,
                                   0.15 * texture_spicy.width, 0.15 * texture_spicy.height, texture_spicy)
+    arcade.draw_texture_rectangle(player_x, player_y + jump_h - shift + 30,
+                                  0.15 * texture_pepper.width, 0.15 * texture_pepper.height, texture_pepper)
 
     score()
     menu()
