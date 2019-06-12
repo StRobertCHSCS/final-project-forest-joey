@@ -343,7 +343,6 @@ def losing_screen():
         arcade.draw_texture_rectangle(400, 150, 0.5 * texture_died.width, 0.5 * texture_died.height, texture_died, 0)
 
 
-
     # the lost screen will disappear in one second and revert to the menu screen without user interference
     # if the user presses the space bar they will immediately start a new game
     if time > 60:
