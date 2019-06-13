@@ -35,10 +35,10 @@ high_score = 0
 time = 0
 count = 0
 
-start_sound = False
-play_sound = False
 laser_sound = arcade.load_sound("sounds/3538.mp3")
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
+whoosh_sound = arcade.load_sound("sounds/whoosh.mp3")
+meep_sound = arcade.load_sound("sounds/meepbeep.mp3")
 
 texture_stars = arcade.load_texture("images/starrr.png")
 texture_logo = arcade.load_texture("images/splogogo.png")
@@ -124,7 +124,7 @@ def jumping():
         up = -20
         player_y += jump_h
         jump_h = 0
-        arcade.play_sound(laser_sound)
+        # arcade.play_sound(laser_sound)
 
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
@@ -281,20 +281,20 @@ def menu():
     if intro and instructions_number == 0:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
                                       1 * texture_stars.height, texture_stars, 0)
-
         arcade.draw_texture_rectangle(700, 500, 0.8 * texture_ship.width, 0.8 * texture_ship.height, texture_ship, -25)
-        arcade.draw_rectangle_filled(420, 220, 380, 70, arcade.color.ORANGE, 0)
-        arcade.draw_circle_filled(247, 397, 70, arcade.color.YELLOW_ROSE)
-        arcade.draw_texture_rectangle(250, 400, texture_logo.width, texture_logo.height, texture_logo, 0)
 
+        arcade.draw_rectangle_filled(440, 320, 400, 70, arcade.color.ORANGE, 0)
         text_start = "{0:^27}".format("Click SPACE to start!")
-        arcade.draw_text(text_start, 250, 205, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+        arcade.draw_text(text_start, 250, 305, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
         high_score_txt = "High score: " + str(high_score)
-        arcade.draw_text(high_score_txt, 500, 100, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+        arcade.draw_text(high_score_txt, 330, 110, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
-        help_txt = "Press ENTER for help"
-        arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 20, font_name='Comic Sans MS')
+        arcade.draw_rectangle_filled(430, 220, 480, 70, arcade.color.ORANGE, 0)
+        text_instructions = "Click ENTER for instructions"
+        arcade.draw_text(text_instructions, 210, 210, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+
+        arcade.draw_texture_rectangle(300, 390, 0.2 * texture_spicy.width, 0.2 * texture_spicy.height, texture_spicy)
 
 
 def instructions_1():
