@@ -1,5 +1,6 @@
 import arcade
 from random import randint
+import random
 
 screen_width = 800
 screen_height = 600
@@ -47,12 +48,16 @@ texture_died = arcade.load_texture("images/splotplat.png")
 
 texture_spicy = arcade.load_texture("images/chilli.png")
 texture_pepper = arcade.load_texture("images/jalapeno.png")
-texture_moss = arcade.load_texture("images/moss_plat.png")
+texture_rocks = arcade.load_texture("images/space_rocks.png")
+texture_planet_2 = arcade.load_texture("images/planet_2.png")
 
 ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
+
+planet_x_positions = [100, 200, 300]
+planet_y_positions = [640, 880, 1040]
 
 
 def on_update(delta_time):
@@ -71,6 +76,14 @@ def on_update(delta_time):
 
     if right_pressed and not hit_r and start:
         player_x += 8
+
+    if left_pressed or right_pressed:
+        for index in range(len(planet_y_positions)):
+            planet_y_positions[index] -= 3
+
+            if planet_y_positions[index] < 0:
+                planet_y_positions[index] = random.randrange(screen_height, screen_height + 50)
+                planet_x_positions[index] = random.randrange(0, screen_width)
 
     if start:
         reset()
@@ -214,6 +227,11 @@ def on_draw():
     global player_x, player_y, jump_h, shift, beginning
 
     arcade.start_render()
+    arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
+                                  1 * texture_stars.height, texture_stars, 0)
+    for x, y, in zip(planet_x_positions, planet_y_positions):
+        arcade.draw_texture_rectangle(x, y, 0.3 * texture_planet_2.width, 0.3 * texture_planet_2.height,
+                                      texture_planet_2, -25)
 
     # displays only the last 8 platforms to save computing power
     if block_count < 8:
@@ -223,8 +241,8 @@ def on_draw():
 
     # draws the platforms
     for i in range(beginning, block_count):
-        arcade.draw_texture_rectangle(block_left_side[i] + 40, block_height[i] - 5 - shift, 0.3 * texture_moss.width,
-                                      0.3 * texture_moss.height, texture_moss, 0)
+        arcade.draw_texture_rectangle(block_left_side[i] + 40, block_height[i] - 5 - shift, 0.3 * texture_rocks.width,
+                                      0.3 * texture_rocks.height, texture_rocks, 0)
 
     character(player_x, player_y + jump_h - shift + 30)
 
@@ -375,8 +393,8 @@ def text_panel_2():
     the second instruction panel
     """
 
-    arcade.draw_rectangle_filled(330, 470, 510, 160, arcade.color.ORANGE)
-    text_help = "Help Sploogy explore planet" '\n' " Earth by jumping higher and" '\n' "higher on the blocks"
+    arcade.draw_rectangle_filled(310, 470, 460, 160, arcade.color.ORANGE)
+    text_help = "Help Sploogy explore the" '\n' "universe by jumping higher" '\n' " and higher on the blocks"
     arcade.draw_text(text_help, 100, 430, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
     arcade.draw_rectangle_filled(280, 180, 400, 100, arcade.color.ORANGE)
