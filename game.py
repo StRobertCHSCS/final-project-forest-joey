@@ -1,6 +1,6 @@
 import arcade
-from random import randint
 import random
+from random import randint
 
 screen_width = 800
 screen_height = 600
@@ -22,13 +22,14 @@ start = False
 intro = True
 lost = False
 direction = True
+ascending = False
 
 height_increments = [38, 72, 102, 128, 150]
 lateral_direction = [1, -1]
 
 block_height = [38, 110, 212]
-block_left_side = [160, 360, 230]
-block_right_side = [240, 440, 310]
+block_left_side = [153, 353, 223]
+block_right_side = [257, 457, 327]
 
 shift = 0
 block_count = 3
@@ -49,15 +50,20 @@ texture_died = arcade.load_texture("images/splotplat.png")
 texture_spicy = arcade.load_texture("images/chilli.png")
 texture_pepper = arcade.load_texture("images/jalapeno.png")
 texture_rocks = arcade.load_texture("images/space_rocks.png")
-texture_planet_2 = arcade.load_texture("images/planet_2.png")
+texture_planet_1 = arcade.load_texture("images/planet_2.png")
+texture_planet_2 = arcade.load_texture()
+texture_planet_3 = arcade.load_texture()
+texture_planet_4 = arcade.load_texture()
 
 ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
 
-planet_x_positions = [100, 200, 300]
-planet_y_positions = [640, 880, 1040]
+planet_x = [0, 0, 0, 0]
+planet_y = [700, 700, 700, 700]
+planet_index = [0, 0, 0, 0]
+planets = [texture_planet_1, texture_planet_2, texture_planet_3, texture_planet_4]
 
 
 def on_update(delta_time):
@@ -76,14 +82,6 @@ def on_update(delta_time):
 
     if right_pressed and not hit_r and start:
         player_x += 8
-
-    if left_pressed or right_pressed:
-        for index in range(len(planet_y_positions)):
-            planet_y_positions[index] -= 3
-
-            if planet_y_positions[index] < 0:
-                planet_y_positions[index] = random.randrange(screen_height, screen_height + 50)
-                planet_x_positions[index] = random.randrange(0, screen_width)
 
     if start:
         reset()
@@ -173,16 +171,37 @@ def new_platforms():
         block_right_side.append(block_right_side[block_count] + lateral_d * lateral_v)
 
 
+def planets():
+    global planet_x, planet_y, planet_index
+    for i in range(3):
+        if planet_index[i] == 0:
+            if randint(0, 100) == 50:
+                planet_y[i] = 700
+                planet_index[i] = 1
+                planet_x[i] = randint(50, screen_width - 50)
+
+    for i in range(3):
+        if ascending and planet_index[i] == 1:
+            planet_y[i] -= 1
+
+    for i in range(3):
+        if planet_y[i] < -50:
+            planet_index[i] = 0
+
+
 def shifting():
     """
         shift the screen down as the player progresses up through the game
 
         :return: (int) the amount in which the program will shift the screen down
     """
-    global shift
+    global shift, ascending
 
     if player_y - shift > 200:
         shift += 5
+        ascending = True
+    else:
+        ascending = False
 
 
 def reset():
@@ -227,9 +246,12 @@ def on_draw():
     global player_x, player_y, jump_h, shift, beginning
 
     arcade.start_render()
+
+    # background
     arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
                                   1 * texture_stars.height, texture_stars, 0)
-    for x, y, in zip(planet_x_positions, planet_y_positions):
+
+    for x, y, in zip(planet_1_x, planet_1_y):
         arcade.draw_texture_rectangle(x, y, 0.3 * texture_planet_2.width, 0.3 * texture_planet_2.height,
                                       texture_planet_2, -25)
 
@@ -241,7 +263,7 @@ def on_draw():
 
     # draws the platforms
     for i in range(beginning, block_count):
-        arcade.draw_texture_rectangle(block_left_side[i] + 40, block_height[i] - 5 - shift, 0.3 * texture_rocks.width,
+        arcade.draw_texture_rectangle(block_left_side[i] + 52, block_height[i] - 5 - shift, 0.3 * texture_rocks.width,
                                       0.3 * texture_rocks.height, texture_rocks, 0)
 
     character(player_x, player_y + jump_h - shift + 30)
@@ -289,6 +311,9 @@ def score():
     if player_y > high_score:
         high_score = int(player_y)
 
+
+def draw_planets():
+    for i in range(3):
 
 def menu():
     """
