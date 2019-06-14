@@ -36,11 +36,14 @@ high_score = 0
 time = 0
 count = 0
 
+# load sounds
 laser_sound = arcade.load_sound("sounds/3538.mp3")
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
 whoosh_sound = arcade.load_sound("sounds/whoosh.mp3")
 meep_sound = arcade.load_sound("sounds/meepbeep.mp3")
+tap_sound = arcade.load_sound("sounds/tap.mp3")
 
+# load images
 texture_stars = arcade.load_texture("images/starrr.png")
 texture_logo = arcade.load_texture("images/splogogo.png")
 texture_ship = arcade.load_texture("images/zoomwoom.png")
@@ -53,6 +56,7 @@ texture_planet_1 = arcade.load_texture("images/planet_1.png")
 texture_planet_2 = arcade.load_texture("images/planet_2.png")
 texture_planet_3 = arcade.load_texture("images/planet_3.png")
 
+# start position for animations on instruction panels
 ship_x = 0
 ship_y = 550
 char_x = 710
@@ -331,6 +335,11 @@ def character(x, y):
 
 
 def whoosh():
+    '''
+    plays sound once
+
+    :return:
+    '''
     global play_sound, start_sound, whoosh_sound
     if start_sound and not play_sound:
         arcade.play_sound(whoosh_sound)
@@ -338,6 +347,11 @@ def whoosh():
 
 
 def meep():
+    '''
+    plays sound once
+
+    :return:
+    '''
     global play_sound_meep, start_sound_meep, meep_sound
     if start_sound_meep and not play_sound_meep:
         arcade.play_sound(meep_sound)

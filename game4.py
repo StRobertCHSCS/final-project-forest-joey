@@ -44,6 +44,7 @@ play_sound_meep = False
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
 whoosh_sound = arcade.load_sound("sounds/whoosh.mp3")
 meep_sound = arcade.load_sound("sounds/meepbeep.mp3")
+tap_sound = arcade.load_sound("sounds/tap.mp3")
 
 
 # loads images
@@ -61,9 +62,6 @@ ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
-
-start_sound = False
-play_sound = False
 
 planet_x_positions = [100, 200, 300]
 planet_y_positions = [640, 880, 1040]
@@ -146,7 +144,7 @@ def jumping():
         up = -20
         player_y += jump_h
         jump_h = 0
-        # arcade.play_sound(laser_sound)
+        arcade.play_sound(tap_sound)
 
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
