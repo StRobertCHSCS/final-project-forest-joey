@@ -1,6 +1,6 @@
 import arcade
-from random import randint
 import random
+from random import randint
 
 screen_width = 800
 screen_height = 600
@@ -22,13 +22,14 @@ start = False
 intro = True
 lost = False
 direction = True
+ascending = False
 
 height_increments = [38, 72, 102, 128, 150]
 lateral_direction = [1, -1]
 
 block_height = [38, 110, 212]
-block_left_side = [160, 360, 230]
-block_right_side = [240, 440, 310]
+block_left_side = [153, 353, 223]
+block_right_side = [257, 457, 327]
 
 shift = 0
 block_count = 3
@@ -36,10 +37,10 @@ high_score = 0
 time = 0
 count = 0
 
-start_sound = False
-play_sound = False
 laser_sound = arcade.load_sound("sounds/3538.mp3")
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
+whoosh_sound = arcade.load_sound("sounds/whoosh.mp3")
+meep_sound = arcade.load_sound("sounds/meepbeep.mp3")
 
 texture_stars = arcade.load_texture("images/starrr.png")
 texture_logo = arcade.load_texture("images/splogogo.png")
@@ -49,15 +50,22 @@ texture_died = arcade.load_texture("images/splotplat.png")
 texture_spicy = arcade.load_texture("images/chilli.png")
 texture_pepper = arcade.load_texture("images/jalapeno.png")
 texture_rocks = arcade.load_texture("images/space_rocks.png")
+texture_planet_1 = arcade.load_texture("images/planet_2.png")
 texture_planet_2 = arcade.load_texture("images/planet_2.png")
+texture_planet_3 = arcade.load_texture("images/planet_2.png")
+texture_planet_4 = arcade.load_texture("images/planet_2.png")
 
 ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
 
-planet_x_positions = [100, 200, 300]
-planet_y_positions = [640, 880, 1040]
+planet_x = [0, 0, 0, 0]
+planet_y = [700, 700, 700, 700]
+planet_index = [0, 0, 0, 0]
+planet_speed = [0, 0, 0, 0]
+rand = [36, 982, 1619, 2538]
+planets = [texture_planet_1, texture_planet_2, texture_planet_3, texture_planet_4]
 
 
 def on_update(delta_time):
@@ -77,14 +85,6 @@ def on_update(delta_time):
     if right_pressed and not hit_r and start:
         player_x += 8
 
-    if left_pressed or right_pressed:
-        for index in range(len(planet_y_positions)):
-            planet_y_positions[index] -= 3
-
-            if planet_y_positions[index] < 0:
-                planet_y_positions[index] = random.randrange(screen_height, screen_height + 50)
-                planet_x_positions[index] = random.randrange(0, screen_width)
-
     if start:
         reset()
         block_count = len(block_height) - 1
@@ -92,6 +92,7 @@ def on_update(delta_time):
         jumping()
         new_platforms()
         shifting()
+        planet()
 
 
 def check_hit():
@@ -137,7 +138,7 @@ def jumping():
         up = -20
         player_y += jump_h
         jump_h = 0
-        arcade.play_sound(laser_sound)
+        # arcade.play_sound(laser_sound)
 
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
@@ -155,10 +156,10 @@ def new_platforms():
     if (block_height[block_count] - player_y) < 350:
 
         # ensures that no platforms are generated completely off the screen
-        if block_left_side[block_count] <= 150:
+        if block_left_side[block_count] <= 180:
             lateral_v = 1
             new_height = block_height[block_count] + height_increments[randint(2, 4)]
-        elif block_right_side[block_count] >= 570:
+        elif block_right_side[block_count] >= 540:
             lateral_v = -1
             new_height = block_height[block_count] + height_increments[randint(2, 4)]
         else:
@@ -173,16 +174,46 @@ def new_platforms():
         block_right_side.append(block_right_side[block_count] + lateral_d * lateral_v)
 
 
+def planet():
+    """
+    randomly generates new platforms for the character to land on
+
+    :return: (int, list) the locations of the planets
+    """
+    global planet_x, planet_y, planet_index
+
+    # randomly decides to display a planet if that particular planet is not already displayed
+    # randomly generates coordinates for the planets as well as how fast they will move
+    for i in range(4):
+        if planet_index[i] == 0:
+            if randint(0, 3000) == rand[i]:
+                planet_y[i] = 700
+                planet_index[i] = 1
+                planet_x[i] = randint(50, screen_width - 50)
+                planet_speed[i] = randint(3, 15) / 10
+
+    for i in range(4):
+        if ascending and planet_index[i] == 1:
+            planet_y[i] -= 1 * planet_speed[i]
+
+    for i in range(4):
+        if planet_y[i] < -50:
+            planet_index[i] = 0
+
+
 def shifting():
     """
         shift the screen down as the player progresses up through the game
 
         :return: (int) the amount in which the program will shift the screen down
     """
-    global shift
+    global shift, ascending
 
     if player_y - shift > 200:
         shift += 5
+        ascending = True
+    else:
+        ascending = False
 
 
 def reset():
@@ -197,7 +228,7 @@ def reset():
     # if the character falls below the screen, reset all game parameters and display the losing screen
     if player_y + jump_h - shift < 0:
 
-        # arcade.play_sound(splat_sound)
+        arcade.play_sound(splat_sound)
 
         start = False
         intro = True
@@ -208,6 +239,10 @@ def reset():
             del block_height[3]
             del block_right_side[3]
             del block_left_side[3]
+
+        # resets planets
+        for i in range(4):
+            planet_index[i] = 0
 
         # resets parameters for the location of the character
         player_y = 0
@@ -227,11 +262,18 @@ def on_draw():
     global player_x, player_y, jump_h, shift, beginning
 
     arcade.start_render()
+
+    # background
     arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
                                   1 * texture_stars.height, texture_stars, 0)
-    for x, y, in zip(planet_x_positions, planet_y_positions):
-        arcade.draw_texture_rectangle(x, y, 0.3 * texture_planet_2.width, 0.3 * texture_planet_2.height,
-                                      texture_planet_2, -25)
+
+    # draws planets
+    for i in range(4):
+        if planet_index[i] == 1:
+            arcade.draw_texture_rectangle(planet_x[i], planet_y[i],
+                                          0.2 * planets[i].width, 0.2 * planets[i].height, planets[i])
+
+    arcade.draw_rectangle_filled(400, 300, 800, 600, [0, 0, 0, 70])
 
     # displays only the last 8 platforms to save computing power
     if block_count < 8:
@@ -241,11 +283,12 @@ def on_draw():
 
     # draws the platforms
     for i in range(beginning, block_count):
-        arcade.draw_texture_rectangle(block_left_side[i] + 40, block_height[i] - 5 - shift, 0.3 * texture_rocks.width,
+        arcade.draw_texture_rectangle(block_left_side[i] + 52, block_height[i] - 5 - shift, 0.3 * texture_rocks.width,
                                       0.3 * texture_rocks.height, texture_rocks, 0)
 
     character(player_x, player_y + jump_h - shift + 30)
 
+    arcade.draw_rectangle_filled(400, 580, 800, 80, [0, 0, 0, 100])
     score()
     menu()
     instructions_1()
@@ -284,7 +327,7 @@ def score():
 
     # tracks the score of he player based on the y value of the character
     if start:
-        arcade.draw_text(str(int(player_y)), 360, 550, arcade.color.BLACK, 36)
+        arcade.draw_text("{0:^10}".format(str(int(player_y))), 340, 550, arcade.color.ASH_GREY, 36)
 
     if player_y > high_score:
         high_score = int(player_y)
@@ -299,20 +342,20 @@ def menu():
     if intro and instructions_number == 0:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
                                       1 * texture_stars.height, texture_stars, 0)
-
         arcade.draw_texture_rectangle(700, 500, 0.8 * texture_ship.width, 0.8 * texture_ship.height, texture_ship, -25)
-        arcade.draw_rectangle_filled(420, 220, 380, 70, arcade.color.ORANGE, 0)
-        arcade.draw_circle_filled(247, 397, 70, arcade.color.YELLOW_ROSE)
-        arcade.draw_texture_rectangle(250, 400, texture_logo.width, texture_logo.height, texture_logo, 0)
 
+        arcade.draw_rectangle_filled(400, 320, 400, 70, arcade.color.ORANGE, 0)
         text_start = "{0:^27}".format("Click SPACE to start!")
-        arcade.draw_text(text_start, 250, 205, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+        arcade.draw_text(text_start, 230, 305, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
         high_score_txt = "High score: " + str(high_score)
-        arcade.draw_text(high_score_txt, 500, 100, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+        arcade.draw_text(high_score_txt, 330, 110, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
-        help_txt = "Press ENTER for help"
-        arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 20, font_name='Comic Sans MS')
+        arcade.draw_rectangle_filled(400, 220, 480, 70, arcade.color.ORANGE, 0)
+        text_instructions = "Click ENTER for instructions"
+        arcade.draw_text(text_instructions, 210, 210, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+
+        arcade.draw_texture_rectangle(300, 390, 0.2 * texture_spicy.width, 0.2 * texture_spicy.height, texture_spicy)
 
 
 def instructions_1():
@@ -433,12 +476,12 @@ def losing_screen():
                                       1 * texture_stars.height, texture_stars, 0)
         arcade.draw_rectangle_filled(400, screen_height // 2, 400, 100, arcade.color.WHITE)
         text_start = "Whoops, You Slipped and Died"
-        arcade.draw_text(text_start, 250, 290, arcade.color.BLACK, 18)
+        arcade.draw_text(text_start, 240, 290, arcade.color.BLACK, 21)
         arcade.draw_texture_rectangle(400, 150, 0.5 * texture_died.width, 0.5 * texture_died.height, texture_died, 0)
 
     # the losing screen will disappear in one second and revert to the menu screen without user interference
     # if the user presses the space bar they will immediately start a new game
-    if time > 60:
+    if time > 90:
         time = 0
         lost = False
     elif start:
