@@ -1,10 +1,9 @@
-# Toasty Ghosty
+# Jalapeno
 ## Objective 
 To climb as high as you can by jumping on the platforms
 without missing any of them. 
 ## Gameplay Instructions
-Use the keys 'D' and 'A' to move right and 
-left respectively. 
+Use the arrow left and right keys to move. 
 ## Scoring 
 The number of pixels climbed will be shown on the screen
 ## Screen Mockup

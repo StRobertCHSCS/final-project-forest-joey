@@ -55,6 +55,7 @@ texture_spicy = arcade.load_texture("images/chilli.png")
 texture_pepper = arcade.load_texture("images/jalapeno.png")
 texture_rocks = arcade.load_texture("images/space_rocks.png")
 texture_planet_2 = arcade.load_texture("images/planet_2.png")
+texture_planet_3 = arcade.load_texture("images/planet_3.png")
 
 ship_x = 0
 ship_y = 550
@@ -87,7 +88,7 @@ def on_update(delta_time):
 
     if left_pressed or right_pressed:
         for index in range(len(planet_y_positions)):
-            planet_y_positions[index] -= 3
+            planet_y_positions[index] -= 1
 
             if planet_y_positions[index] < 0:
                 planet_y_positions[index] = random.randrange(screen_height, screen_height + 50)
@@ -238,7 +239,7 @@ def on_draw():
     arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, 1 * texture_stars.width,
                                   1 * texture_stars.height, texture_stars, 0)
     for x, y, in zip(planet_x_positions, planet_y_positions):
-        arcade.draw_texture_rectangle(x, y, 0.3 * texture_planet_2.width, 0.3 * texture_planet_2.height,
+        arcade.draw_texture_rectangle(x, y, 0.2 * texture_planet_2.width, 0.2 * texture_planet_2.height,
                                       texture_planet_2, -25)
 
     # displays only the last 6 platforms to save computing power

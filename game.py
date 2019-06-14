@@ -1,5 +1,4 @@
 import arcade
-import random
 from random import randint
 
 screen_width = 800
@@ -50,22 +49,26 @@ texture_died = arcade.load_texture("images/splotplat.png")
 texture_spicy = arcade.load_texture("images/chilli.png")
 texture_pepper = arcade.load_texture("images/jalapeno.png")
 texture_rocks = arcade.load_texture("images/space_rocks.png")
-texture_planet_1 = arcade.load_texture("images/planet_2.png")
+texture_planet_1 = arcade.load_texture("images/planet_1.png")
 texture_planet_2 = arcade.load_texture("images/planet_2.png")
-texture_planet_3 = arcade.load_texture("images/planet_2.png")
-texture_planet_4 = arcade.load_texture("images/planet_2.png")
+texture_planet_3 = arcade.load_texture("images/planet_3.png")
 
 ship_x = 0
 ship_y = 550
 char_x = 710
 char_y = 470
 
-planet_x = [0, 0, 0, 0]
-planet_y = [700, 700, 700, 700]
-planet_index = [0, 0, 0, 0]
-planet_speed = [0, 0, 0, 0]
-rand = [36, 982, 1619, 1538]
-planets = [texture_planet_1, texture_planet_2, texture_planet_3, texture_planet_4]
+planet_x = [0, 0, 0]
+planet_y = [700, 700, 700]
+planet_index = [0, 0, 0]
+planet_speed = [0, 0, 0]
+rand = [36, 282, 419]
+planets = [texture_planet_1, texture_planet_2, texture_planet_3]
+
+start_sound = False
+play_sound = False
+start_sound_meep = False
+play_sound_meep = False
 
 
 def on_update(delta_time):
@@ -184,19 +187,29 @@ def planet():
 
     # randomly decides to display a planet if that particular planet is not already displayed
     # randomly generates coordinates for the planets as well as how fast they will move
-    for i in range(4):
+    for i in range(3):
         if planet_index[i] == 0:
-            if randint(0, 2500) == rand[i]:
+            if randint(0, 1000) == rand[i]:
                 planet_y[i] = 700
                 planet_index[i] = 1
-                planet_x[i] = randint(50, screen_width - 50)
+
+                # prevents overlapping planets
+                planet_x[i] = randint(80, screen_width - 80)
+                overlap = True
+                while overlap:
+                    for n in range(3):
+                        if planet_x[n] - 80 < planet_x[i] < planet_x[n] + 80:
+                            planet_x[i] = randint(80, screen_width - 80)
+                        else:
+                            overlap = False
+
                 planet_speed[i] = randint(3, 15) / 10
 
-    for i in range(4):
+    for i in range(3):
         if ascending and planet_index[i] == 1:
             planet_y[i] -= 1 * planet_speed[i]
 
-    for i in range(4):
+    for i in range(3):
         if planet_y[i] < -50:
             planet_index[i] = 0
 
@@ -241,7 +254,7 @@ def reset():
             del block_left_side[3]
 
         # resets planets
-        for i in range(4):
+        for i in range(3):
             planet_index[i] = 0
 
         # resets parameters for the location of the character
@@ -268,10 +281,10 @@ def on_draw():
                                   1 * texture_stars.height, texture_stars, 0)
 
     # draws planets
-    for i in range(4):
+    for i in range(3):
         if planet_index[i] == 1:
             arcade.draw_texture_rectangle(planet_x[i], planet_y[i],
-                                          0.2 * planets[i].width, 0.2 * planets[i].height, planets[i])
+                                          0.27 * planets[i].width, 0.27 * planets[i].height, planets[i])
 
     arcade.draw_rectangle_filled(400, 300, 800, 600, [0, 0, 0, 70])
 
@@ -317,6 +330,20 @@ def character(x, y):
         arcade.draw_texture_rectangle(x, y, 0.15 * texture_pepper.width, 0.15 * texture_pepper.height, texture_pepper)
 
 
+def whoosh():
+    global play_sound, start_sound, whoosh_sound
+    if start_sound and not play_sound:
+        arcade.play_sound(whoosh_sound)
+        play_sound = True
+
+
+def meep():
+    global play_sound_meep, start_sound_meep, meep_sound
+    if start_sound_meep and not play_sound_meep:
+        arcade.play_sound(meep_sound)
+        play_sound_meep = True
+
+
 def score():
     """
     keeps track of the player's score and their high score
@@ -328,6 +355,8 @@ def score():
     # tracks the score of he player based on the y value of the character
     if start:
         arcade.draw_text("{0:^10}".format(str(int(player_y))), 340, 550, arcade.color.ASH_GREY, 36)
+        text_enter = "Click ENTER for instructions"
+        arcade.draw_text(text_enter, 450, 30, arcade.color.WHITE, 18, font_name='Comic Sans MS')
 
     if player_y > high_score:
         high_score = int(player_y)
@@ -346,15 +375,14 @@ def menu():
 
         arcade.draw_rectangle_filled(400, 320, 400, 70, arcade.color.ORANGE, 0)
         text_start = "{0:^27}".format("Click SPACE to start!")
-        arcade.draw_text(text_start, 230, 305, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+        arcade.draw_text(text_start, 220, 305, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
         high_score_txt = "High score: " + str(high_score)
         arcade.draw_text(high_score_txt, 330, 110, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
         arcade.draw_rectangle_filled(400, 220, 480, 70, arcade.color.ORANGE, 0)
-        text_instructions = "Click ENTER for instructions"
-        arcade.draw_text(text_instructions, 210, 210, arcade.color.WHITE, 24, font_name='Comic Sans MS')
-
+        text_instru = "Click ENTER for instructions"
+        arcade.draw_text(text_instru, 190, 210, arcade.color.WHITE, 24, font_name='Comic Sans MS')
         arcade.draw_texture_rectangle(300, 390, 0.2 * texture_spicy.width, 0.2 * texture_spicy.height, texture_spicy)
 
 
@@ -364,7 +392,7 @@ def instructions_1():
 
     :return: (int) the coordinated of the ship and character
     """
-    global instructions_number, ship_x, ship_y, char_x, char_y
+    global instructions_number, ship_x, ship_y, char_x, char_y, start_sound, start_sound_meep
 
     if 0 < instructions_number < 4:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, texture_stars.width,
@@ -377,10 +405,12 @@ def instructions_1():
             arcade.draw_triangle_filled(710, 500, 400, 200, 700, 100, arcade.color.BABY_BLUE)
             arcade.draw_texture_rectangle(700, 480, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
                                           texture_ship, -25)
+            start_sound_meep = True
+            meep()
             char_x -= 3
             char_y -= 5
-            arcade.draw_texture_rectangle(char_x, char_y, 0.15 * texture_pepper.width,
-                                          0.15 * texture_pepper.height, texture_pepper)
+            arcade.draw_texture_rectangle(char_x, char_y, 0.15 * texture_spicy.width,
+                                          0.15 * texture_spicy.height, texture_spicy)
 
         # moves the ship towards the right
         elif ship_x != 700 and char_y != 100:
@@ -393,11 +423,13 @@ def instructions_1():
             ship_x += 10
             ship_y -= 1
             arcade.draw_texture_rectangle(490, 100,
-                                          0.15 * texture_pepper.width, 0.15 * texture_pepper.height, texture_pepper)
+                                          0.2 * texture_spicy.width, 0.2 * texture_spicy.height, texture_spicy)
             text_panel_1()
 
         arcade.draw_texture_rectangle(ship_x, ship_y, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
                                       texture_ship, -25)
+        start_sound = True
+        whoosh()
 
     # draws the second text pane;
     if instructions_number == 2:
@@ -427,25 +459,24 @@ def text_panel_1():
     text_hi = "This is Sploogy"
     arcade.draw_text(text_hi, 100, 200, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
-    help_txt = "Press ENTER to continue"
-    arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 16, font_name='Comic Sans MS')
+    text_next = "Press ENTER to continue"
+    arcade.draw_text(text_next, 100, 150, arcade.color.WHITE, 20, font_name='Comic Sans MS')
 
 
 def text_panel_2():
     """
     the second instruction panel
     """
-
     arcade.draw_rectangle_filled(310, 470, 460, 160, arcade.color.ORANGE)
-    text_help = "Help Sploogy explore the" '\n' "universe by jumping higher" '\n' " and higher on the blocks"
-    arcade.draw_text(text_help, 100, 430, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+    text_help = "Help Sploogy explore the" '\n' "universe by jumping higher" '\n' "and higher on the blocks"
+    arcade.draw_text(text_help, 100, 500, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
-    arcade.draw_rectangle_filled(280, 180, 400, 100, arcade.color.ORANGE)
-    text_move = "Press the arrow keys to" '\n' "move left and right"
-    arcade.draw_text(text_move, 100, 150, arcade.color.WHITE, 24, font_name='Comic Sans MS')
+    arcade.draw_rectangle_filled(260, 180, 350, 100, arcade.color.ORANGE)
+    text_move = "Press left and right" '\n' "arrows to move"
+    arcade.draw_text(text_move, 100, 190, arcade.color.WHITE, 24, font_name='Comic Sans MS')
 
-    help_txt = "Press ENTER to continue"
-    arcade.draw_text(help_txt, 500, 50, arcade.color.WHITE, 16, font_name='Comic Sans MS')
+    text_next = "Press ENTER to continue"
+    arcade.draw_text(text_next, 200, 100, arcade.color.WHITE, 20, font_name='Comic Sans MS')
 
 
 def text_panel_3():
@@ -476,7 +507,7 @@ def losing_screen():
                                       1 * texture_stars.height, texture_stars, 0)
         arcade.draw_rectangle_filled(400, screen_height // 2, 400, 100, arcade.color.WHITE)
         text_start = "Whoops, You Slipped and Died"
-        arcade.draw_text(text_start, 240, 290, arcade.color.BLACK, 21)
+        arcade.draw_text(text_start, 230, 290, arcade.color.BLACK, 20)
         arcade.draw_texture_rectangle(400, 150, 0.5 * texture_died.width, 0.5 * texture_died.height, texture_died, 0)
 
     # the losing screen will disappear in one second and revert to the menu screen without user interference
