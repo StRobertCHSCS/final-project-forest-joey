@@ -64,7 +64,7 @@ planet_x = [0, 0, 0, 0]
 planet_y = [700, 700, 700, 700]
 planet_index = [0, 0, 0, 0]
 planet_speed = [0, 0, 0, 0]
-rand = [36, 982, 1619, 2538]
+rand = [36, 982, 1619, 1538]
 planets = [texture_planet_1, texture_planet_2, texture_planet_3, texture_planet_4]
 
 
@@ -186,7 +186,7 @@ def planet():
     # randomly generates coordinates for the planets as well as how fast they will move
     for i in range(4):
         if planet_index[i] == 0:
-            if randint(0, 3000) == rand[i]:
+            if randint(0, 2500) == rand[i]:
                 planet_y[i] = 700
                 planet_index[i] = 1
                 planet_x[i] = randint(50, screen_width - 50)
