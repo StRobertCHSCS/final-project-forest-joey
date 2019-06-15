@@ -579,7 +579,7 @@ def setup():
     window.on_key_press = on_key_press
     window.on_key_release = on_key_release
 
-    arcade.run()
+    arcade.run() 
 
 
 if __name__ == '__main__':
