@@ -146,7 +146,7 @@ def jumping():
         player_y += jump_h
         jump_h = 0
         arcade.play_sound(tap_sound)
-        
+
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
 
@@ -335,11 +335,9 @@ def character(x, y):
 
 
 def whoosh():
-    '''
+    """
     plays sound once
-
-    :return:
-    '''
+    """
     global play_sound, start_sound, whoosh_sound
     if start_sound and not play_sound:
         arcade.play_sound(whoosh_sound)
@@ -347,11 +345,9 @@ def whoosh():
 
 
 def meep():
-    '''
+    """
     plays sound once
-
-    :return:
-    '''
+    """
     global play_sound_meep, start_sound_meep, meep_sound
     if start_sound_meep and not play_sound_meep:
         arcade.play_sound(meep_sound)
@@ -366,9 +362,10 @@ def score():
     """
     global high_score
 
-    # tracks the score of he player based on the y value of the character
+    # tracks the score of the player based on the y value of the character
     if start:
-        arcade.draw_text("{0:^10}".format(str(int(player_y))), 340, 550, arcade.color.ASH_GREY, 36)
+        arcade.draw_text("{0:^10}".format(str(int(player_y))), 340, 550, arcade.color.ASH_GREY, 36,
+                         font_name='Comic Sans MS')
         text_enter = "Click ENTER for instructions"
         arcade.draw_text(text_enter, 450, 30, arcade.color.WHITE, 18, font_name='Comic Sans MS')
 
@@ -414,8 +411,14 @@ def instructions_1():
 
     # displays the first set on instructions
     if instructions_number == 1:
+        # moves the ship towards the right
+        if ship_x != 700 and char_y != 100:
+            arcade.draw_rectangle_filled(470, 100, 50, 50, arcade.color.BLACK)
+            ship_x += 10
+            ship_y -= 1
+
         # stops the ship, draws the light triangle, and moves the character down
-        if ship_x == 700 and char_y != 100:
+        elif ship_x == 700 and char_y != 100:
             arcade.draw_triangle_filled(710, 500, 400, 200, 700, 100, arcade.color.BABY_BLUE)
             arcade.draw_texture_rectangle(700, 480, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
                                           texture_ship, -25)
@@ -425,12 +428,6 @@ def instructions_1():
             char_y -= 5
             arcade.draw_texture_rectangle(char_x, char_y, 0.15 * texture_spicy.width,
                                           0.15 * texture_spicy.height, texture_spicy)
-
-        # moves the ship towards the right
-        elif ship_x != 700 and char_y != 100:
-            arcade.draw_rectangle_filled(470, 100, 50, 50, arcade.color.BLACK)
-            ship_x += 10
-            ship_y -= 1
 
         # moves the ship off the screen, draws the first text panel
         else:
