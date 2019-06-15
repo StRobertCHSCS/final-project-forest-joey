@@ -63,7 +63,6 @@ planet_x = [0, 0, 0]
 planet_y = [700, 700, 700]
 planet_index = [0, 0, 0]
 planet_speed = [0, 0, 0]
-rand = [36, 282, 419]
 planets = [texture_planet_1, texture_planet_2, texture_planet_3]
 
 start_sound = False
@@ -189,21 +188,24 @@ def planet():
     # randomly generates coordinates for the planets as well as how fast they will move
     for i in range(3):
         if planet_index[i] == 0:
-            if randint(0, 1000) == rand[i]:
+            if randint(0, 600) == 450:
                 planet_y[i] = 700
                 planet_index[i] = 1
+                planet_x[i] = randint(50, screen_width - 50)
 
                 # prevents overlapping planets
-                planet_x[i] = randint(80, screen_width - 80)
                 overlap = True
                 while overlap:
+                    overlap = False
                     for n in range(3):
-                        if planet_x[n] - 80 < planet_x[i] < planet_x[n] + 80:
+                        if n == i or planet_index[n] == 0:
+                            pass
+                        elif planet_x[n] - 100 < planet_x[i] < planet_x[n] + 100:
                             planet_x[i] = randint(80, screen_width - 80)
-                        else:
-                            overlap = False
+                            overlap = True
 
                 planet_speed[i] = randint(3, 15) / 10
+                print(planet_x)
 
     for i in range(3):
         if ascending and planet_index[i] == 1:
@@ -301,7 +303,6 @@ def on_draw():
 
     character(player_x, player_y + jump_h - shift + 30)
 
-    arcade.draw_rectangle_filled(400, 580, 800, 80, [0, 0, 0, 100])
     score()
     menu()
     instructions_1()
@@ -357,6 +358,8 @@ def score():
     :return: (int) current and high score of the player
     """
     global high_score
+
+    arcade.draw_rectangle_filled(440, 580, 200, 80, [0, 0, 0, 100])
 
     # tracks the score of the player based on the y value of the character
     if start:
