@@ -145,8 +145,8 @@ def jumping():
         up = -20
         player_y += jump_h
         jump_h = 0
-        # arcade.play_sound(laser_sound)
-
+        arcade.play_sound(tap_sound)
+        
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
 

@@ -1,4 +1,4 @@
-# Jalapeno
+# Cosmos 
 ## Objective 
 To climb as high as you can by jumping on the platforms
 without missing any of them. 
