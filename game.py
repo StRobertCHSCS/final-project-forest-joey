@@ -205,7 +205,6 @@ def planet():
                             overlap = True
 
                 planet_speed[i] = randint(3, 15) / 10
-                print(planet_x)
 
     for i in range(3):
         if ascending and planet_index[i] == 1:
@@ -359,7 +358,7 @@ def score():
     """
     global high_score
 
-    arcade.draw_rectangle_filled(440, 580, 200, 80, [0, 0, 0, 100])
+    arcade.draw_rectangle_filled(400, 580, 800, 80, [0, 0, 0, 100])
 
     # tracks the score of the player based on the y value of the character
     if start:
