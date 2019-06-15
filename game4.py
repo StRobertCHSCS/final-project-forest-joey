@@ -44,12 +44,10 @@ play_sound_meep = False
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
 whoosh_sound = arcade.load_sound("sounds/whoosh.mp3")
 meep_sound = arcade.load_sound("sounds/meepbeep.mp3")
-tap_sound = arcade.load_sound("sounds/tap.mp3")
 
 
 # loads images
 texture_stars = arcade.load_texture("images/starrr.png")
-texture_logo = arcade.load_texture("images/splogogo.png")
 texture_ship = arcade.load_texture("images/zoomwoom.png")
 texture_died = arcade.load_texture("images/splotplat.png")
 texture_spicy = arcade.load_texture("images/chilli.png")
@@ -144,7 +142,6 @@ def jumping():
         up = -20
         player_y += jump_h
         jump_h = 0
-        arcade.play_sound(tap_sound)
 
     jump_h = 0.5 * -up ** 2 + 200
     up += 1

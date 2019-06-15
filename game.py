@@ -37,15 +37,12 @@ time = 0
 count = 0
 
 # load sounds
-laser_sound = arcade.load_sound("sounds/3538.mp3")
 splat_sound = arcade.load_sound("sounds/pihtas.mp3")
 whoosh_sound = arcade.load_sound("sounds/whoosh.mp3")
 meep_sound = arcade.load_sound("sounds/meepbeep.mp3")
-tap_sound = arcade.load_sound("sounds/tap.mp3")
 
 # load images
 texture_stars = arcade.load_texture("images/starrr.png")
-texture_logo = arcade.load_texture("images/splogogo.png")
 texture_ship = arcade.load_texture("images/zoomwoom.png")
 texture_died = arcade.load_texture("images/splotplat.png")
 
@@ -145,7 +142,6 @@ def jumping():
         up = -20
         player_y += jump_h
         jump_h = 0
-        arcade.play_sound(tap_sound)
 
     jump_h = 0.5 * -up ** 2 + 200
     up += 1
@@ -183,7 +179,7 @@ def new_platforms():
 
 def planet():
     """
-    randomly generates new platforms for the character to land on
+    randomly generates new planets
 
     :return: (int, list) the locations of the planets
     """
@@ -442,7 +438,7 @@ def instructions_1():
         start_sound = True
         whoosh()
 
-    # draws the second text pane;
+    # draws the second text panel
     if instructions_number == 2:
         text_panel_2()
         arcade.draw_texture_rectangle(600, 260, 0.3 * texture_spicy.width, 0.3 * texture_spicy.height, texture_spicy)
