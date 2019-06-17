@@ -357,6 +357,7 @@ def whoosh():
     plays sound once
     """
     global play_whoosh
+
     if play_whoosh:
         arcade.play_sound(whoosh_sound)
         play_whoosh = False
@@ -367,6 +368,7 @@ def meep():
     plays sound once
     """
     global play_meep
+
     if play_meep:
         arcade.play_sound(meep_sound)
         play_meep = False
@@ -424,7 +426,7 @@ def instructions_1():
 
     :return: (int) the coordinates of the ship and character
     """
-    global instructions_number, ship_x, ship_y, char_x, char_y, play_whoosh, play_meep
+    global ship_x, ship_y, char_x, char_y, play_whoosh, play_meep, instructions_number
 
     if 0 < instructions_number < 4:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, texture_stars.width,
@@ -499,6 +501,7 @@ def text_panel_2():
     """
     the second instruction panel
     """
+
     arcade.draw_rectangle_filled(310, 470, 460, 160, arcade.color.ORANGE)
     text_help = "Help Sploogy explore the" '\n' "universe by jumping higher" '\n' "and higher on the blocks"
     arcade.draw_text(text_help, 100, 500, arcade.color.WHITE, 24, font_name='Comic Sans MS')
@@ -588,6 +591,7 @@ def setup():
     """
     opens a window and sets up the window
     """
+
     arcade.open_window(800, 600, "My Arcade Game")
     arcade.set_background_color(arcade.color.BLUE_GRAY)
     arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2,
