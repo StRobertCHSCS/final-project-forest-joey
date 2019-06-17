@@ -242,7 +242,7 @@ def reset():
     # if the character falls below the screen, reset all game parameters and display the losing screen
     if player_y + jump_h - shift < 0:
 
-        arcade.play_whoosh(splat_sound)
+        arcade.play_sound(splat_sound)
 
         start = False
         intro = True
