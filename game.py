@@ -1,3 +1,17 @@
+"""
+-------------------------------------------------------------------------------
+Name:		game.py
+
+Purpose:	Cosmos is a game where the objective is to jump higher and higher 
+            on the platforms without falling off
+
+Authors:    Zhou.F
+            Zhuang.J  
+
+Created:	17/06/2019
+------------------------------------------------------------------------------
+"""
+
 import arcade
 from random import randint
 
