@@ -53,7 +53,7 @@ texture_planet_1 = arcade.load_texture("images/planet_1.png")
 texture_planet_2 = arcade.load_texture("images/planet_2.png")
 texture_planet_3 = arcade.load_texture("images/planet_3.png")
 
-# start position for animations on instruction panels
+# start position for animations
 ship_x = 0
 ship_y = 550
 char_x = 710
@@ -206,10 +206,12 @@ def planet():
 
                 planet_speed[i] = randint(3, 15) / 10
 
+    # moves planets down
     for i in range(3):
         if ascending and planet_index[i] == 1:
             planet_y[i] -= 1 * planet_speed[i]
 
+    # deletes planets once they fall below the screen
     for i in range(3):
         if planet_y[i] < -50:
             planet_index[i] = 0
@@ -270,8 +272,6 @@ def reset():
 def on_draw():
     """
     updates all the visual aspects of the game and renders appropriate graphics
-
-    :return: the drawing of the character and platforms
     """
     global player_x, player_y, jump_h, shift, beginning
 
@@ -314,7 +314,6 @@ def character(x, y):
 
     :param x: x coordinate of the character
     :param y: y coordinate of the character
-    :return: (int) current and high score of the player
     """
     global direction
 
@@ -367,6 +366,7 @@ def score():
         text_enter = "Click ENTER for instructions"
         arcade.draw_text(text_enter, 450, 30, arcade.color.WHITE, 18, font_name='Comic Sans MS')
 
+    # updates the high score
     if player_y > high_score:
         high_score = int(player_y)
 
@@ -399,7 +399,7 @@ def instructions_1():
     """
     animates and displays the instruction screens
 
-    :return: (int) the coordinated of the ship and character
+    :return: (int) the coordinates of the ship and character
     """
     global instructions_number, ship_x, ship_y, char_x, char_y, start_sound, start_sound_meep
 
@@ -579,7 +579,7 @@ def setup():
     window.on_key_press = on_key_press
     window.on_key_release = on_key_release
 
-    arcade.run() 
+    arcade.run()
 
 
 if __name__ == '__main__':

@@ -7,4 +7,4 @@ Use the arrow left and right keys to move.
 ## Scoring 
 The number of pixels climbed will be shown on the screen
 ## Screen Mock-up
-![image](https://raw.githubusercontent.com/StRobertCHSCS/final-project-forest-joey/master/images/mockup.png)
+![image](https://raw.githubusercontent.com/StRobertCHSCS/final-project-forest-joey/master/images/screen_mockup.png)
