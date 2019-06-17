@@ -101,13 +101,14 @@ def on_update(delta_time):
         player_x += 8
 
     if start:
-        reset()
-        block_count = len(block_height) - 1
+        reset(block_height, block_left_side, block_right_side, planet_index)
         check_hit()
         jumping()
-        new_platforms()
+        new_platforms(block_left_side, block_right_side, block_height)
         shifting()
-        planet()
+        planet(planet_x, planet_y, planet_index, planet_speed)
+
+    block_count = len(block_height) - 1
 
 
 def check_hit():
@@ -116,7 +117,7 @@ def check_hit():
 
     :return: (bool) if the character has collided and where the collision occurred
     """
-    global hit_d, hit_l, hit_r, player_x, player_y, jump_h, block_count
+    global hit_d, hit_l, hit_r
 
     hit_d = False
     hit_r = False
@@ -158,75 +159,80 @@ def jumping():
     up += 1
 
 
-def new_platforms():
+def new_platforms(left, right, height):
     """
     randomly generates new platforms for the character to land on
 
+    :param left: the list of variables defining the left side of the platforms
+    :param right: the list of variables defining the right side of the platforms
+    :param height: the list of variables defining the height of the platforms
     :return: (int, list) the new horizontal and vertical positions of the platforms
     """
-    global block_height, block_left_side, block_right_side, block_count
 
-    # generate a new platform only if the player is within 350 pixels of the highest patform
-    if (block_height[block_count] - player_y) < 350:
+    # generate a new platform only if the player is within 350 pixels of the highest platform
+    if (height[block_count] - player_y) < 350:
 
         # ensures that no platforms are generated completely off the screen
-        if block_left_side[block_count] <= 180:
+        if left[block_count] <= 180:
             lateral_v = 1
-            new_height = block_height[block_count] + height_increments[randint(2, 4)]
-        elif block_right_side[block_count] >= 540:
+            new_height = height[block_count] + height_increments[randint(2, 4)]
+        elif right[block_count] >= 540:
             lateral_v = -1
-            new_height = block_height[block_count] + height_increments[randint(2, 4)]
+            new_height = height[block_count] + height_increments[randint(2, 4)]
         else:
             lateral_v = lateral_direction[randint(0, 1)]
-            new_height = block_height[block_count] + height_increments[randint(0, 4)]
+            new_height = height[block_count] + height_increments[randint(0, 4)]
 
         lateral_d = randint(8, 20) * 10
 
         # appends new values to lists
-        block_height.append(new_height)
-        block_left_side.append(block_left_side[block_count] + lateral_d * lateral_v)
-        block_right_side.append(block_right_side[block_count] + lateral_d * lateral_v)
+        height.append(new_height)
+        left.append(left[block_count] + lateral_d * lateral_v)
+        right.append(right[block_count] + lateral_d * lateral_v)
 
 
-def planet():
+def planet(x, y, index, speed):
     """
-    randomly generates new planets
+    randomly generates planets in new locations
 
+    :param x: list of x positions of the planets
+    :param y: list of y positions of the planets
+    :param index: list that tells the program which planets have been displayed
+    :param speed: list of how fast the planets move down the screen
     :return: (int, list) the locations of the planets
     """
-    global planet_x, planet_y, planet_index
 
     # randomly decides to display a planet if that particular planet is not already displayed
     # randomly generates coordinates for the planets as well as how fast they will move
     for i in range(3):
-        if planet_index[i] == 0:
+        if index[i] == 0:
             if randint(0, 600) == 450:
-                planet_y[i] = 700
-                planet_index[i] = 1
-                planet_x[i] = randint(50, screen_width - 50)
+                y[i] = 700
+                index[i] = 1
+                x[i] = randint(50, screen_width - 50)
 
                 # prevents overlapping planets
                 overlap = True
                 while overlap:
                     overlap = False
                     for n in range(3):
-                        if n == i or planet_index[n] == 0:
+                        if n == i or index[n] == 0:
                             pass
-                        elif planet_x[n] - 100 < planet_x[i] < planet_x[n] + 100:
-                            planet_x[i] = randint(80, screen_width - 80)
+                        elif x[n] - 100 < x[i] < x[n] + 100:
+                            x[i] = randint(80, screen_width - 80)
                             overlap = True
 
-                planet_speed[i] = randint(3, 15) / 10
+                speed[i] = randint(3, 15) / 10
 
     # moves planets down
     for i in range(3):
-        if ascending and planet_index[i] == 1:
-            planet_y[i] -= 1 * planet_speed[i]
+        if ascending and index[i] == 1:
+            y[i] -= 1 * speed[i]
 
     # deletes planets once they fall below the screen
     for i in range(3):
-        if planet_y[i] < -50:
-            planet_index[i] = 0
+        if y[i] < -50:
+            index[i] = 0
 
 
 def shifting():
@@ -244,14 +250,17 @@ def shifting():
         ascending = False
 
 
-def reset():
+def reset(height, right, left, index):
     """
         reset values to restart the game once the player has lost
 
+        :param left: the list of variables defining the left side of the platforms
+        :param right: the list of variables defining the right side of the platforms
+        :param height: the list of variables defining the height of the platforms
+        :param index: list that tells the program which planets have been displayed
         :return: (int, bool) the original values of all parameters
     """
-    global block_height, block_left_side, block_right_side, player_y, player_x, jump_h
-    global intro, start, up, shift, lost, count
+    global player_y, player_x, jump_h, intro, start, up, shift, lost, count, block_count
 
     # if the character falls below the screen, reset all game parameters and display the losing screen
     if player_y + jump_h - shift < 0:
@@ -264,13 +273,13 @@ def reset():
 
         # delete all the information about previously generated platforms
         for i in range(block_count - 2):
-            del block_height[3]
-            del block_right_side[3]
-            del block_left_side[3]
+            del height[3]
+            del right[3]
+            del left[3]
 
         # resets planets
         for i in range(3):
-            planet_index[i] = 0
+            index[i] = 0
 
         # resets parameters for the location of the character
         player_y = 0
@@ -280,12 +289,14 @@ def reset():
         shift = 0
         count = 0
 
+        block_count = len(block_height) - 1
+
 
 def on_draw():
     """
     updates all the visual aspects of the game and renders appropriate graphics
     """
-    global player_x, player_y, jump_h, shift, beginning
+    global beginning
 
     arcade.start_render()
 
