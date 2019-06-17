@@ -562,8 +562,6 @@ def on_key_release(key, modifiers):
 def setup():
     """
     opens a window and sets up the window
-
-    :return: calls the program
     """
     arcade.open_window(800, 600, "My Arcade Game")
     arcade.set_background_color(arcade.color.BLUE_GRAY)
