@@ -65,10 +65,8 @@ planet_index = [0, 0, 0]
 planet_speed = [0, 0, 0]
 planets = [texture_planet_1, texture_planet_2, texture_planet_3]
 
-start_sound = False
-play_sound = False
-start_sound_meep = False
-play_sound_meep = False
+play_whoosh = True
+play_meep = True
 
 
 def on_update(delta_time):
@@ -244,7 +242,7 @@ def reset():
     # if the character falls below the screen, reset all game parameters and display the losing screen
     if player_y + jump_h - shift < 0:
 
-        arcade.play_sound(splat_sound)
+        arcade.play_whoosh(splat_sound)
 
         start = False
         intro = True
@@ -333,20 +331,20 @@ def whoosh():
     """
     plays sound once
     """
-    global play_sound, start_sound, whoosh_sound
-    if start_sound and not play_sound:
+    global play_whoosh
+    if play_whoosh:
         arcade.play_sound(whoosh_sound)
-        play_sound = True
+        play_whoosh = False
 
 
 def meep():
     """
     plays sound once
     """
-    global play_sound_meep, start_sound_meep, meep_sound
-    if start_sound_meep and not play_sound_meep:
+    global play_meep
+    if play_meep:
         arcade.play_sound(meep_sound)
-        play_sound_meep = True
+        play_meep = False
 
 
 def score():
@@ -401,7 +399,7 @@ def instructions_1():
 
     :return: (int) the coordinates of the ship and character
     """
-    global instructions_number, ship_x, ship_y, char_x, char_y, start_sound, start_sound_meep
+    global instructions_number, ship_x, ship_y, char_x, char_y, play_whoosh, play_meep
 
     if 0 < instructions_number < 4:
         arcade.draw_texture_rectangle(screen_width // 2, screen_height // 2, texture_stars.width,
@@ -420,7 +418,6 @@ def instructions_1():
             arcade.draw_triangle_filled(710, 500, 400, 200, 700, 100, arcade.color.BABY_BLUE)
             arcade.draw_texture_rectangle(700, 480, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
                                           texture_ship, -25)
-            start_sound_meep = True
             meep()
             char_x -= 3
             char_y -= 5
@@ -437,7 +434,6 @@ def instructions_1():
 
         arcade.draw_texture_rectangle(ship_x, ship_y, 0.8 * texture_ship.width, 0.8 * texture_ship.height,
                                       texture_ship, -25)
-        start_sound = True
         whoosh()
 
     # draws the second text panel
@@ -457,6 +453,8 @@ def instructions_1():
         ship_y = 550
         char_x = 710
         char_y = 470
+        play_meep = True
+        play_whoosh = True
 
 
 def text_panel_1():
